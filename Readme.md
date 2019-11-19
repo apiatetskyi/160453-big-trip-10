@@ -1,7 +1,7 @@
 # Личный проект «Большое путешествие» [![Build status][travis-image]][travis-url]
 
 * Студент: [Алексей Пятецкий](https://up.htmlacademy.ru/ecmascript/10/user/160453).
-* Наставник: `Пока работаем без наставника, а там посмотрим :)`.
+* Наставник: [Константин Каруна](https://up.htmlacademy.ru/ecmascript/10/user/74977).
 
 ---
 
