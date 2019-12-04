@@ -1,9 +1,9 @@
-export /**
+/**
  * Get HTML string template for trip days
  *
  * @return {string}
  */
-const getBoardTemplate = () => {
+export const getBoardTemplate = () => {
   return (
     `<ul class="trip-days">
       <li class="trip-days__item  day">
