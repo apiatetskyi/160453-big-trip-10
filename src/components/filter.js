@@ -1,12 +1,12 @@
 /**
  * Get HTML string template for filter.
  *
- * @param {Array} filter
+ * @param {Array} filters
  *
  * @return {string}
  */
-export const getFilterTemplate = (filter) => {
-  const filtersTemplate = filter.reduce((template, filter) => {
+export const getFilterTemplate = (filters) => {
+  const filtersTemplate = filters.reduce((template, filter) => {
     return (
       `${template}
       <div class="trip-filters__filter">
