@@ -1,5 +1,6 @@
 import moment from 'moment';
-import {EventTypeEnum, CITIES} from '../mock/consts';
+import {EventTypeEnum, LOCATIONS} from '../mock/consts';
+import {getEventPlaceholder} from '../mock/event';
 import {capitalize} from '../utils';
 
 const activities = Object.values(EventTypeEnum).filter((type) => type.group === `activity`);
@@ -59,8 +60,8 @@ export const getEventFormTemplate = (event) => {
   const dateFormat = `DD/MM/YY HH:mm`;
   const dateStart = moment(event.dateStart).format(dateFormat);
   const dateEnd = moment(event.dateEnd).format(dateFormat);
-  const cities = [...CITIES].reduce((template, city) => {
-    return `${template}<option value="${city}"></option>`;
+  const locations = LOCATIONS.reduce((template, location) => {
+    return `${template}<option value="${location.name}"></option>`;
   }, ``);
 
   const photos = event.attractionImages.reduce((template, photo) => {
@@ -94,10 +95,10 @@ export const getEventFormTemplate = (event) => {
 
         <div class="event__field-group  event__field-group--destination">
           <label class="event__label  event__type-output" for="event-destination-1">
-            ${capitalize(event.type.code)} at
+            ${capitalize(event.type.code)} ${getEventPlaceholder(event.type)}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${event.location}" list="destination-list-1">
-          <datalist id="destination-list-1">${cities}</datalist>
+          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${event.location.name}" list="destination-list-1">
+          <datalist id="destination-list-1">${locations}</datalist>
         </div>
 
         <div class="event__field-group  event__field-group--time">

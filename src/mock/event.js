@@ -1,4 +1,4 @@
-import {EventTypeEnum, MillisecondsEnum, CITIES} from './consts';
+import {EventTypeEnum, MillisecondsEnum, LOCATIONS} from './consts';
 import {getRandomDescription, getRandomNumber, roundToStep} from '../utils';
 
 /**
@@ -30,12 +30,15 @@ export const getEventPlaceholder = (type) => {
 };
 
 /**
- * @param {Set} cities
+ * @param {Array} locations
  *
+ * @param {string} eventType
  * @return {string}
  */
-const getRandomCity = (cities) => {
-  return [...cities][Math.floor(Math.random() * cities.size)];
+const getRandomLocation = (locations, eventType) => {
+  locations = locations.filter((location) => location.eventTypes.has(eventType));
+
+  return locations[Math.floor(Math.random() * locations.length)];
 };
 
 
@@ -98,6 +101,7 @@ export const getEvent = () => {
       ),
       30 * MillisecondsEnum.MINUTE
   );
+
   const dateEnd = roundToStep(
       getRandomNumber(
           dateStart + getRandomNumber(1, 2) * MillisecondsEnum.HOUR,
@@ -106,11 +110,12 @@ export const getEvent = () => {
       30 * MillisecondsEnum.MINUTE
   );
 
+  const type = getRandomType(EventTypeEnum);
+
   lastEventData = dateEnd;
 
   return {
-    type: getRandomType(EventTypeEnum),
-    location: getRandomCity(CITIES),
+    location: getRandomLocation(LOCATIONS, type.code),
     attractionImages: new Array(5).fill(``).map((_) => `http://picsum.photos/300/150?r=${Math.random()}`),
     description: getRandomDescription(),
     price: roundToStep(getRandomNumber(50, 150), 25),
@@ -118,6 +123,7 @@ export const getEvent = () => {
     dateStart,
     dateEnd,
     offers,
+    type,
   };
 };
 
@@ -139,8 +145,6 @@ export const getEvents = (count) => new Array(count).fill(``).map((_) => getEven
  */
 export const groupEventsByDays = (events) => {
   let counter = 0;
-
-  events.sort((current, next) => current.dateStart - next.dateStart);
 
   return events.reduce((days, event) => {
     let currentDayKey = new Date(event.dateStart).setHours(0, 0, 0, 0);

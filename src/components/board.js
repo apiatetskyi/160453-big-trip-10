@@ -1,3 +1,4 @@
+import moment from 'moment';
 import {getEventTemplate} from './event';
 import {getEventFormTemplate} from './event-form';
 
@@ -25,12 +26,10 @@ export const getBoardTemplate = (days) => {
       `<li class="trip-days__item  day">
         <div class="day__info">
           <span class="day__counter">${day.counter + 1}</span>
-          <time class="day__date" datetime=""></time>
+          <time class="day__date" datetime="${moment(day.date).format(`YYYY-MM-DD`)}">${moment(day.date).format(`MMM DD`)}</time>
         </div>
-
-        <ul class="trip-events__list">
-          ${eventsTemplate}
-        </ul>
+  
+        <ul class="trip-events__list">${eventsTemplate}</ul>
       </li>`
     );
   }
