@@ -7,9 +7,26 @@ import {getRandomDescription, getRandomNumber, roundToStep} from '../utils';
  * @return {EventType}
  */
 const getRandomType = (types) => {
-  const values = Object.values(types).map((type) => type.code);
+  const values = Object.values(types);
 
   return values[Math.floor(Math.random() * values.length)];
+};
+
+/**
+ * @param {EventType} type
+ *
+ * @return {string}
+ */
+export const getEventPlaceholder = (type) => {
+  let placeholder = ``;
+
+  if (type.group === `activity`) {
+    placeholder = `in`;
+  } else if (type.group === `transfer`) {
+    placeholder = `to`;
+  }
+
+  return placeholder;
 };
 
 /**

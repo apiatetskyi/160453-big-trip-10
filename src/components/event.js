@@ -1,6 +1,7 @@
 import moment from 'moment';
 import {capitalize} from '../utils';
 import {MillisecondsEnum} from '../mock/consts';
+import {getEventPlaceholder} from '../mock/event';
 
 /**
  * @param {number} diff Difference between dateStart dateEnd in milliseconds.
@@ -34,8 +35,8 @@ const getDurationString = (diff) => {
  */
 const getOffersTemplate = (offers) => {
   return [...offers]
-    .slice(0, 2)
     .filter((offer) => offer[1].isChecked)
+    .slice(0, 2)
     .reduce((template, offer) => {
       const offerCode = offer[0];
       offer = offer[1];
@@ -66,9 +67,9 @@ export const getEventTemplate = (event) => {
     `<li class="trip-events__item">
       <div class="event">
         <div class="event__type">
-          <img class="event__type-icon" width="42" height="42" src="img/icons/${event.type}.png" alt="Event type icon">
+          <img class="event__type-icon" width="42" height="42" src="img/icons/${event.type.code}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${capitalize(event.type)} to ${event.location}</h3>
+        <h3 class="event__title">${capitalize(event.type.code)} ${getEventPlaceholder(event.type)} ${event.location}</h3>
 
         <div class="event__schedule">
           <p class="event__time">
