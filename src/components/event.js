@@ -19,6 +19,7 @@ const getDurationString = (diff) => {
 
     if (amount !== 0) {
       diff = diff - amount * partials[part][1];
+      amount = `${amount}`.length === 1 ? `0${amount}` : amount;
     }
 
     return amount !== 0 ? `${result} ${amount}${partials[part][0]}` : result;
