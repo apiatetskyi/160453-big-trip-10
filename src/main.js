@@ -4,6 +4,8 @@ import {getMenuTemplate} from './components/menu';
 import {getSortingTemplate} from './components/sorting';
 import {getTripInfoTemplate} from './components/trip-info';
 import {getEvents, groupEventsByDays} from './mock/event';
+import {getMenu} from './mock/menu';
+import {getFilter} from './mock/filter';
 import {render} from './utils';
 
 const EVENTS_AMOUNT = 20;
@@ -12,8 +14,8 @@ const tripControlsElement = document.querySelector(`.trip-controls`);
 const tripEventsElement = document.querySelector(`.trip-events`);
 
 render(tripHeaderElement, getTripInfoTemplate(), `afterbegin`);
-render(tripControlsElement.children[0], getMenuTemplate(), `afterend`);
-render(tripControlsElement.children[1], getFilterTemplate(), `afterend`);
+render(tripControlsElement.children[0], getMenuTemplate(getMenu()), `afterend`);
+render(tripControlsElement.children[1], getFilterTemplate(getFilter()), `afterend`);
 render(tripEventsElement, getSortingTemplate());
 
 const events = getEvents(EVENTS_AMOUNT);
