@@ -10,28 +10,31 @@ import {getEventFormTemplate} from './event-form';
  */
 export const getBoardTemplate = (days) => {
   let daysTemplate = ``;
+  let counter = 1;
 
-  for (let [, day] of days) {
+  for (let [dayTimestamp, events] of days) {
     let eventsTemplate = ``;
-    let events = day.events.slice();
+    let eventsCopy = events.slice();
 
-    if (day.counter === 0) {
+    if (counter === 1) {
       eventsTemplate = getEventFormTemplate(events[0]);
-      events = events.slice(1);
+      eventsCopy = events.slice(1);
     }
 
-    eventsTemplate += events.reduce((template, event) => template + getEventTemplate(event), ``);
+    eventsTemplate += eventsCopy.map((event) => getEventTemplate(event)).join(`\n`);
 
     daysTemplate += (
       `<li class="trip-days__item  day">
         <div class="day__info">
-          <span class="day__counter">${day.counter + 1}</span>
-          <time class="day__date" datetime="${moment(day.date).format(`YYYY-MM-DD`)}">${moment(day.date).format(`MMM DD`)}</time>
+          <span class="day__counter">${counter}</span>
+          <time class="day__date" datetime="${moment(dayTimestamp).format(`YYYY-MM-DD`)}">${moment(dayTimestamp).format(`MMM DD`)}</time>
         </div>
   
         <ul class="trip-events__list">${eventsTemplate}</ul>
       </li>`
     );
+
+    counter++;
   }
 
   return (

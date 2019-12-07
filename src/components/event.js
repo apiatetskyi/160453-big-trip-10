@@ -9,23 +9,20 @@ import {getEventPlaceholder} from '../mock/event';
  * @return {string} Event duration string for template
  */
 const getDurationString = (diff) => {
-  const partials = {
-    days: [`D`, MillisecondsEnum.DAY],
-    hours: [`H`, MillisecondsEnum.HOUR],
-    minutes: [`M`, MillisecondsEnum.MINUTE],
-  };
+  const dateParts = [MillisecondsEnum.DAY, MillisecondsEnum.HOUR, MillisecondsEnum.MINUTE];
+  const dateFormats = [`D`, `H`, `M`];
 
-  return Object.keys(partials).reduce((result, part) => {
-    let amount = Math.floor(diff / partials[part][1]) || 0;
+  return dateParts.map((part, index) => {
+    let amount = Math.floor(diff / part) || 0;
 
     if (amount !== 0) {
-      diff = diff - amount * partials[part][1];
+      diff = diff - amount * part;
       amount = `${amount}`.length === 1 ? `0${amount}` : amount;
     }
 
-    return amount !== 0 ? `${result} ${amount}${partials[part][0]}` : result;
+    return amount !== 0 ? `${amount}${dateFormats[index]}` : ``;
 
-  }, ``);
+  }).join(`\n`);
 };
 
 /**
@@ -34,20 +31,18 @@ const getDurationString = (diff) => {
  * @return {string}
  */
 const getOffersTemplate = (offers) => {
-  return [...offers]
-    .filter((offer) => offer[1].isChecked)
-    .slice(0, 2)
-    .reduce((template, offer) => {
-      const offerCode = offer[0];
-      offer = offer[1];
+  return [...offers].filter((offer) => offer[1].isChecked).slice(0, 2)
+    .map((offer) => {
+      const [code, data] = offer;
+
       return (
-        `${template}<li class="event__offer">
-          <span class="event__offer-title">${capitalize(offerCode)}</span>
+        `<li class="event__offer">
+          <span class="event__offer-title">${capitalize(code)}</span>
           &plus;
-          &euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
+          &euro;&nbsp;<span class="event__offer-price">${data.price}</span>
         </li>`
       );
-    }, ``);
+    }). join(`\n`);
 };
 
 /**

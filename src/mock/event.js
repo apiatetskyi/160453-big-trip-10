@@ -134,7 +134,7 @@ export const getEvent = () => {
  *
  * @return {Array}
  */
-export const getEvents = (count) => new Array(count).fill(``).map((_) => getEvent());
+export const getEvents = (count) => new Array(count).fill(``).map(() => getEvent());
 
 /**
  * Group array of events by day.
@@ -144,21 +144,13 @@ export const getEvents = (count) => new Array(count).fill(``).map((_) => getEven
  * @return {Map}
  */
 export const groupEventsByDays = (events) => {
-  let counter = 0;
-
   return events.reduce((days, event) => {
-    let currentDayKey = new Date(event.dateStart).setHours(0, 0, 0, 0);
+    let dayTimestamp = new Date(event.dateStart).setHours(0, 0, 0, 0);
 
-    if (days.has(currentDayKey)) {
-      days.get(currentDayKey).events.push(event);
+    if (days.has(dayTimestamp)) {
+      days.get(dayTimestamp).push(event);
     } else {
-      days.set(currentDayKey, {
-        date: event.dateStart,
-        counter,
-        events: [event],
-      });
-
-      counter++;
+      days.set(dayTimestamp, [event]);
     }
 
     return days;

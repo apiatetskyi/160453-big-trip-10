@@ -12,14 +12,14 @@ const transfers = Object.values(EventTypeEnum).filter((type) => type.group === `
  * @return {string}
  */
 const getTypeOptionsTemplate = (options) => {
-  return options.reduce((template, option) => {
+  return options.map((option) => {
     return (
-      `${template}<div class="event__type-item">
+      `<div class="event__type-item">
         <input id="event-type-${option.code}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${option.code}">
         <label class="event__type-label  event__type-label--${option.code}" for="event-type-${option.code}-1">${capitalize(option.code)}</label>
       </div>`
     );
-  }, ``);
+  }).join(`\n`);
 };
 
 /**
@@ -28,27 +28,25 @@ const getTypeOptionsTemplate = (options) => {
  * @return {string}
  */
 const getOffersTemplate = (offers) => {
-  return [...offers].reduce((template, offer) => {
-    const offerCode = offer[0];
-    offer = offer[1];
+  return [...offers].map((offer) => {
+    const [code, data] = offer;
 
     return (
-      `${template}
-      <div class="event__offer-selector">
+      `<div class="event__offer-selector">
         <input class="event__offer-checkbox  visually-hidden"
-               id="event-offer-${offerCode}-1"
+               id="event-offer-${code}-1"
                type="checkbox"
-               name="event-offer-${offerCode}"
-               ${offer.isChecked ? `checked` : ``}
+               name="event-offer-${code}"
+               ${data.isChecked ? `checked` : ``}
         >
-        <label class="event__offer-label" for="event-offer-${offerCode}-1">
-          <span class="event__offer-title">${offer.title}</span>
+        <label class="event__offer-label" for="event-offer-${code}-1">
+          <span class="event__offer-title">${data.title}</span>
           &plus;
-          &euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
+          &euro;&nbsp;<span class="event__offer-price">${data.price}</span>
         </label>
       </div>`
     );
-  }, ``);
+  }).join(`\n`);
 };
 
 /**
@@ -60,15 +58,11 @@ export const getEventFormTemplate = (event) => {
   const dateFormat = `DD/MM/YY HH:mm`;
   const dateStart = moment(event.dateStart).format(dateFormat);
   const dateEnd = moment(event.dateEnd).format(dateFormat);
-  const locations = LOCATIONS.reduce((template, location) => {
-    return `${template}<option value="${location.name}"></option>`;
-  }, ``);
-
-  const photos = event.attractionImages.reduce((template, photo) => {
-    return `${template}<img class="event__photo" src="${photo}" alt="Event photo">`;
-  }, ``);
-
   const isChecked = event.isFavorite ? `checked` : ``;
+  const locations = LOCATIONS
+    .map((location) => `<option value="${location.name}"></option>`).join(`\n`);
+  const photos = event.attractionImages
+    .map((photo) => `<img class="event__photo" src="${photo}" alt="Event photo">`).join(`\n`);
 
   return (
     `<form class="event  event--edit" action="#" method="post">
