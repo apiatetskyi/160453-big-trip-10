@@ -96,6 +96,13 @@ export default class TripInfo {
   }
 
   /**
+   * Remove reference to trip info element.
+   */
+  removeElement() {
+    this._element = null;
+  }
+
+  /**
    * Get string template for trip info.
    *
    * @return {string}

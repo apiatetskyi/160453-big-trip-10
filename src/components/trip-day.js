@@ -36,6 +36,13 @@ export default class TripDay {
   }
 
   /**
+   * Remove reference to trip day element.
+   */
+  removeElement() {
+    this._element = null;
+  }
+
+  /**
    * Get string template for trip day.
    *
    * @return {string}

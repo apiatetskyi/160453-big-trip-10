@@ -29,6 +29,13 @@ export default class Board {
   }
 
   /**
+   * Remove reference to board element.
+   */
+  removeElement() {
+    this._element = null;
+  }
+
+  /**
    * Get string template for board.
    *
    * @return {string}
