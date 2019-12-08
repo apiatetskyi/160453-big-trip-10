@@ -130,3 +130,15 @@ export const MillisecondsEnum = Object.freeze({
   HOUR: 60 * 60 * 1000,
   DAY: 24 * 60 * 60 * 1000,
 });
+
+/**
+ * Enum for render position.
+ *
+ * @readonly
+ * @enum {string}
+ */
+export const RenderPosition = Object.freeze({
+  AFTER_BEGIN: `afterbegin`,
+  AFTER_END: `afterend`,
+  BEFORE_END: `beforeend`,
+});
