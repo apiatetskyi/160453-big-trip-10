@@ -13,26 +13,10 @@ const getRandomType = (types) => {
 };
 
 /**
- * @param {EventType} type
- *
- * @return {string}
- */
-export const getEventPlaceholder = (type) => {
-  let placeholder = ``;
-
-  if (type.group === `activity`) {
-    placeholder = `in`;
-  } else if (type.group === `transfer`) {
-    placeholder = `to`;
-  }
-
-  return placeholder;
-};
-
-/**
  * @param {Array} locations
  *
  * @param {string} eventType
+ *
  * @return {string}
  */
 const getRandomLocation = (locations, eventType) => {

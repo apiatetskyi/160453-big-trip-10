@@ -32,6 +32,43 @@ export default class TripInfo {
   }
 
   /**
+   * Get reference to trip info element.
+   *
+   * @return {HTMLElement}
+   */
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  /**
+   * Remove reference to trip info element.
+   */
+  removeElement() {
+    this._element = null;
+  }
+
+  /**
+   * Get string template for trip info.
+   *
+   * @return {string}
+   */
+  getTemplate() {
+    return (
+      `<section class="trip-main__trip-info  trip-info">
+        <div class="trip-info__main">
+          <h1 class="trip-info__title">${this._getRouteTemplate()}</h1>
+          <p class="trip-info__dates">${this._getPeriodTemplate()}</p>
+        </div>
+        <p class="trip-info__cost">Total: &euro;&nbsp;<span class="trip-info__cost-value">${this._getPrice()}</span></p>
+      </section>`
+    );
+  }
+
+  /**
    * Get template for trip period.
    *
    * @return {string}
@@ -46,7 +83,6 @@ export default class TripInfo {
       ? `${dateStart.format(`MMM`).toUpperCase()} ${dateStart.format(`DD`)} &nbsp;&mdash;&nbsp; ${dateEnd.format(`DD`)}`
       : ``;
   }
-
 
   /**
    * Get template for trip route.
@@ -82,40 +118,4 @@ export default class TripInfo {
     }, 0);
   }
 
-  /**
-   * Get reference to trip info.
-   *
-   * @return {HTMLElement}
-   */
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  /**
-   * Remove reference to trip info element.
-   */
-  removeElement() {
-    this._element = null;
-  }
-
-  /**
-   * Get string template for trip info.
-   *
-   * @return {string}
-   */
-  getTemplate() {
-    return (
-      `<section class="trip-main__trip-info  trip-info">
-        <div class="trip-info__main">
-          <h1 class="trip-info__title">${this._getRouteTemplate()}</h1>
-          <p class="trip-info__dates">${this._getPeriodTemplate()}</p>
-        </div>
-        <p class="trip-info__cost">Total: &euro;&nbsp;<span class="trip-info__cost-value">${this._getPrice()}</span></p>
-      </section>`
-    );
-  }
 }

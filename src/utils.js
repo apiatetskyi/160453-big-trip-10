@@ -1,4 +1,4 @@
-import {RenderPosition} from './mock/consts';
+import {RenderPosition, MillisecondsEnum} from './mock/consts';
 
 /**
  * Render HTML string to container.
@@ -109,11 +109,56 @@ const groupEventsByDays = (events) => {
   }, new Map());
 };
 
+/**
+ * Get placeholder for trip event name.
+ *
+ * @param {EventType} type
+ *
+ * @return {string}
+ */
+const getEventPlaceholder = (type) => {
+  let placeholder = ``;
+
+  if (type.group === `activity`) {
+    placeholder = `in`;
+  } else if (type.group === `transfer`) {
+    placeholder = `to`;
+  }
+
+  return placeholder;
+};
+
+/**
+ * Get template for trip event duration.
+ *
+ * @param {number} diff Difference between dateStart dateEnd in milliseconds.
+ *
+ * @return {string} Event duration string for template
+ */
+const getEventDurationString = (diff) => {
+  const dateParts = [MillisecondsEnum.DAY, MillisecondsEnum.HOUR, MillisecondsEnum.MINUTE];
+  const dateFormats = [`D`, `H`, `M`];
+
+  return dateParts.map((part, index) => {
+    let amount = Math.floor(diff / part) || 0;
+
+    if (amount !== 0) {
+      diff = diff - amount * part;
+      amount = `${amount}`.length === 1 ? `0${amount}` : amount;
+    }
+
+    return amount !== 0 ? `${amount}${dateFormats[index]}` : ``;
+
+  }).join(`\n`);
+};
+
 export {
   render,
-  createElement,
+  getEventPlaceholder,
   shuffleArray,
   getRandomNumber,
+  createElement,
+  getEventDurationString,
   getRandomDescription,
   groupEventsByDays,
   capitalize,

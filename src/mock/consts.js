@@ -10,7 +10,7 @@
  * @readonly
  * @enum {EventType}
  */
-export const EventTypeEnum = Object.freeze({
+const EventTypeEnum = Object.freeze({
   CHECK: {
     code: `check-in`,
     group: `activity`,
@@ -61,7 +61,7 @@ const cityEventTypes = Object.values(EventTypeEnum)
  * @readonly
  * @const {Array} Predefined list of available locations.
  */
-export const LOCATIONS = [
+const LOCATIONS = [
   {
     name: `New York`,
     type: `city`,
@@ -125,7 +125,7 @@ export const LOCATIONS = [
  * @readonly
  * @enum {number}
  */
-export const MillisecondsEnum = Object.freeze({
+const MillisecondsEnum = Object.freeze({
   MINUTE: 60 * 1000,
   HOUR: 60 * 60 * 1000,
   DAY: 24 * 60 * 60 * 1000,
@@ -137,8 +137,20 @@ export const MillisecondsEnum = Object.freeze({
  * @readonly
  * @enum {string}
  */
-export const RenderPosition = Object.freeze({
+const RenderPosition = Object.freeze({
   AFTER_BEGIN: `afterbegin`,
   AFTER_END: `afterend`,
   BEFORE_END: `beforeend`,
 });
+
+const activities = Object.values(EventTypeEnum).filter((type) => type.group === `activity`);
+const transfers = Object.values(EventTypeEnum).filter((type) => type.group === `transfer`);
+
+export {
+  EventTypeEnum,
+  LOCATIONS,
+  MillisecondsEnum,
+  RenderPosition,
+  activities,
+  transfers,
+};
