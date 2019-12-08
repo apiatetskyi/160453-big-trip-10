@@ -116,7 +116,7 @@ export const getEvent = () => {
 
   return {
     location: getRandomLocation(LOCATIONS, type.code),
-    attractionImages: new Array(5).fill(``).map((_) => `http://picsum.photos/300/150?r=${Math.random()}`),
+    attractionImages: new Array(5).fill(``).map(() => `http://picsum.photos/300/150?r=${Math.random()}`),
     description: getRandomDescription(),
     price: roundToStep(getRandomNumber(50, 150), 25),
     isFavorite: Math.random() >= 0.5,
@@ -135,24 +135,3 @@ export const getEvent = () => {
  * @return {Array}
  */
 export const getEvents = (count) => new Array(count).fill(``).map(() => getEvent());
-
-/**
- * Group array of events by day.
- *
- * @param {Array} events
- *
- * @return {Map}
- */
-export const groupEventsByDays = (events) => {
-  return events.reduce((days, event) => {
-    let dayTimestamp = new Date(event.dateStart).setHours(0, 0, 0, 0);
-
-    if (days.has(dayTimestamp)) {
-      days.get(dayTimestamp).push(event);
-    } else {
-      days.set(dayTimestamp, [event]);
-    }
-
-    return days;
-  }, new Map());
-};
