@@ -8,6 +8,7 @@ import Filter from './components/filter';
 import Menu from './components/menu';
 import Event from './components/event';
 import EventForm from './components/event-form';
+import NoEvents from './components/no-events';
 
 import {getEvents} from './mock/event';
 import {getMenu} from './mock/menu';
@@ -66,7 +67,7 @@ const renderEvent = (parentElement, event) => {
 
 const tripHeaderElement = document.querySelector(`.trip-main`);
 const tripControlsElement = document.querySelector(`.trip-controls`);
-const tripEventsElement = document.querySelector(`.trip-events`);
+const tripContainerElement = document.querySelector(`.page-main .page-body__container`);
 const events = getEvents(EVENTS_AMOUNT).sort((current, next) => current.dateStart - next.dateStart);
 
 const tripInfoComponent = new TripInfo(events);
@@ -78,17 +79,23 @@ const boardComponent = new Board(events);
 render(tripHeaderElement, tripInfoComponent.getElement(), RenderPosition.AFTER_BEGIN);
 render(tripControlsElement.children[0], menuComponent.getElement(), RenderPosition.AFTER_END);
 render(tripControlsElement.children[1], filterComponent.getElement(), RenderPosition.AFTER_END);
-render(tripEventsElement, boardComponent.getElement());
-render(tripEventsElement, sortingComponent.getElement());
+render(tripContainerElement, boardComponent.getElement());
 
-[...groupEventsByDays(events)].forEach((day, index) => {
-  const [dayTimestamp, dayEvents] = day;
-  const tripDay = new TripDay(dayTimestamp, index + 1);
-  const eventsElement = tripDay.getElement().querySelector(`.trip-events__list`);
+if (events.length) {
+  render(boardComponent.getElement(), sortingComponent.getElement());
+  [...groupEventsByDays(events)].forEach((day, index) => {
+    const [dayTimestamp, dayEvents] = day;
+    const tripDay = new TripDay(dayTimestamp, index + 1);
+    const eventsElement = tripDay.getElement().querySelector(`.trip-events__list`);
 
-  dayEvents.forEach((event) => {
-    renderEvent(eventsElement, event);
+    dayEvents.forEach((event) => {
+      renderEvent(eventsElement, event);
+    });
+
+    render(boardComponent.getElement(), tripDay.getElement());
   });
+} else {
+  const noEventsComponent = new NoEvents();
 
-  render(boardComponent.getElement(), tripDay.getElement());
-});
+  render(boardComponent.getElement(), noEventsComponent.getElement());
+}
