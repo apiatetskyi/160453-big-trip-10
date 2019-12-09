@@ -1,6 +1,8 @@
 import moment from 'moment';
 import {createElement} from '../utils';
 
+const SETTER_ERROR_MESSAGE = `This is readonly property.`;
+
 /**
  * Class representing trip info.
  */
@@ -20,7 +22,7 @@ export default class TripInfo {
   }
 
   set dateStart(value) {
-    throw new Error(`This is readonly property.`);
+    throw new Error(SETTER_ERROR_MESSAGE);
   }
 
   get dateEnd() {
@@ -28,7 +30,7 @@ export default class TripInfo {
   }
 
   set dateEnd(value) {
-    throw new Error(`This is readonly property.`);
+    throw new Error(SETTER_ERROR_MESSAGE);
   }
 
   /**
