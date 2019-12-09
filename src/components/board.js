@@ -1,45 +1,46 @@
-import moment from 'moment';
-import {getEventTemplate} from './event';
-import {getEventFormTemplate} from './event-form';
+import {createElement} from '../utils';
 
 /**
- * Get HTML string template for trip days.
- *
- * @param {Map} days
- * @return {string}
+ * Class representing trip board.
  */
-export const getBoardTemplate = (days) => {
-  let daysTemplate = ``;
-  let counter = 1;
+export default class Board {
 
-  for (let [dayTimestamp, events] of days) {
-    let eventsTemplate = ``;
-    let eventsCopy = events.slice();
-
-    if (counter === 1) {
-      eventsTemplate = getEventFormTemplate(events[0]);
-      eventsCopy = events.slice(1);
-    }
-
-    eventsTemplate += eventsCopy.map((event) => getEventTemplate(event)).join(`\n`);
-
-    daysTemplate += (
-      `<li class="trip-days__item  day">
-        <div class="day__info">
-          <span class="day__counter">${counter}</span>
-          <time class="day__date" datetime="${moment(dayTimestamp).format(`YYYY-MM-DD`)}">${moment(dayTimestamp).format(`MMM DD`)}</time>
-        </div>
-  
-        <ul class="trip-events__list">${eventsTemplate}</ul>
-      </li>`
-    );
-
-    counter++;
+  /**
+   * Create a board.
+   *
+   * @param {Array} events
+   */
+  constructor(events) {
+    this._element = null;
+    this._events = events;
   }
 
-  return (
-    `<ul class="trip-days">
-      ${daysTemplate}
-    </ul>`
-  );
-};
+  /**
+   * Get reference to board element.
+   *
+   * @return {HTMLElement}
+   */
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  /**
+   * Remove reference to board element.
+   */
+  removeElement() {
+    this._element = null;
+  }
+
+  /**
+   * Get string template for board.
+   *
+   * @return {string}
+   */
+  getTemplate() {
+    return `<ul class="trip-days"></ul>`;
+  }
+}

@@ -1,20 +1,35 @@
+import {RenderPosition, MillisecondsEnum} from './mock/consts';
+
 /**
  * Render HTML string to container.
  *
  * @param {HTMLElement} container
- * @param {string} template
+ * @param {string|HTMLElement} template
  * @param {string} [position=beforeEnd]
  */
-export const render = (container, template, position = `beforeEnd`) => {
-  container.insertAdjacentHTML(position, template);
+const render = (container, template, position = RenderPosition.BEFORE_END) => {
+  if (typeof template === `string`) {
+    container.insertAdjacentHTML(position, template);
+  } else {
+    container.insertAdjacentElement(position, template);
+  }
 };
+
+/**
+ * Create HTMLElement from template string.
+ *
+ * @param {string} template
+ *
+ * @return {HTMLElement}
+ */
+const createElement = (template) => document.createRange().createContextualFragment(template).firstChild;
 
 /**
  * @param {Array} array
  *
  * @return {array}
  */
-export const shuffleArray = (array) => {
+const shuffleArray = (array) => {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [array[i], array[j]] = [array[j], array[i]];
@@ -26,7 +41,7 @@ export const shuffleArray = (array) => {
 /**
  * @return {string}
  */
-export const getRandomDescription = () => {
+const getRandomDescription = () => {
   const template = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`;
 
   return shuffleArray(template.split(`.`).map((sentence) => sentence.trim()))
@@ -43,7 +58,7 @@ export const getRandomDescription = () => {
  *
  * @return {number}
  */
-export const getRandomNumber = (min = 0, max = 10) => {
+const getRandomNumber = (min = 0, max = 10) => {
   min = Math.ceil(min);
   max = Math.floor(max);
 
@@ -57,7 +72,7 @@ export const getRandomNumber = (min = 0, max = 10) => {
  *
  * @return {string}
  */
-export const capitalize = (string) => {
+const capitalize = (string) => {
   return typeof string !== `string` ?
     `` :
     string.charAt(0).toUpperCase() + string.slice(1);
@@ -71,4 +86,81 @@ export const capitalize = (string) => {
  *
  * @return {number}
  */
-export const roundToStep = (value, step = 10) => Math.round(value / step) * step;
+const roundToStep = (value, step = 10) => Math.round(value / step) * step;
+
+/**
+ * Group array of events by day.
+ *
+ * @param {Array} events
+ *
+ * @return {Map}
+ */
+const groupEventsByDays = (events) => {
+  return events.reduce((days, event) => {
+    let dayTimestamp = new Date(event.dateStart).setHours(0, 0, 0, 0);
+
+    if (days.has(dayTimestamp)) {
+      days.get(dayTimestamp).push(event);
+    } else {
+      days.set(dayTimestamp, [event]);
+    }
+
+    return days;
+  }, new Map());
+};
+
+/**
+ * Get placeholder for trip event name.
+ *
+ * @param {EventType} type
+ *
+ * @return {string}
+ */
+const getEventPlaceholder = (type) => {
+  let placeholder = ``;
+
+  if (type.group === `activity`) {
+    placeholder = `in`;
+  } else if (type.group === `transfer`) {
+    placeholder = `to`;
+  }
+
+  return placeholder;
+};
+
+/**
+ * Get template for trip event duration.
+ *
+ * @param {number} diff Difference between dateStart dateEnd in milliseconds.
+ *
+ * @return {string} Event duration string for template
+ */
+const getEventDurationString = (diff) => {
+  const dateParts = [MillisecondsEnum.DAY, MillisecondsEnum.HOUR, MillisecondsEnum.MINUTE];
+  const dateFormats = [`D`, `H`, `M`];
+
+  return dateParts.map((part, index) => {
+    let amount = Math.floor(diff / part) || 0;
+
+    if (amount !== 0) {
+      diff = diff - amount * part;
+      amount = `${amount}`.length === 1 ? `0${amount}` : amount;
+    }
+
+    return amount !== 0 ? `${amount}${dateFormats[index]}` : ``;
+
+  }).join(`\n`);
+};
+
+export {
+  render,
+  getEventPlaceholder,
+  shuffleArray,
+  getRandomNumber,
+  createElement,
+  getEventDurationString,
+  getRandomDescription,
+  groupEventsByDays,
+  capitalize,
+  roundToStep,
+};
