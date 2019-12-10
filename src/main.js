@@ -1,14 +1,14 @@
 import {render, groupEventsByDays} from './utils';
 
-import Board from './components/board';
-import TripDay from './components/trip-day';
-import TripInfo from './components/trip-info';
-import Sorting from './components/sorting';
-import Filter from './components/filter';
-import Menu from './components/menu';
-import Event from './components/event';
-import EventForm from './components/event-form';
-import NoEvents from './components/no-events';
+import BoardComponent from './components/board';
+import TripDayComponent from './components/trip-day';
+import TripInfoComponent from './components/trip-info';
+import SortingComponent from './components/sorting';
+import FilterComponent from './components/filter';
+import MenuComponent from './components/menu';
+import EventComponent from './components/event';
+import EventFormComponent from './components/event-form';
+import NoEventsComponent from './components/no-events';
 
 import {getEvents} from './mock/event';
 import {getMenu} from './mock/menu';
@@ -24,8 +24,8 @@ const EVENTS_AMOUNT = 10;
  * @param {Object} event
  */
 const renderEvent = (parentElement, event) => {
-  const eventComponent = new Event(event);
-  const eventFormComponent = new EventForm(event);
+  const eventComponent = new EventComponent(event);
+  const eventFormComponent = new EventFormComponent(event);
   const editEventButton = eventComponent.getElement().querySelector(`.event__rollup-btn`);
   const eventFormElement = eventFormComponent.getElement().querySelector(`.event--edit`);
 
@@ -70,11 +70,11 @@ const tripControlsElement = document.querySelector(`.trip-controls`);
 const tripContainerElement = document.querySelector(`.page-main .page-body__container`);
 const events = getEvents(EVENTS_AMOUNT).sort((current, next) => current.dateStart - next.dateStart);
 
-const tripInfoComponent = new TripInfo(events);
-const menuComponent = new Menu(getMenu());
-const filterComponent = new Filter(getFilter());
-const sortingComponent = new Sorting();
-const boardComponent = new Board(events);
+const tripInfoComponent = new TripInfoComponent(events);
+const menuComponent = new MenuComponent(getMenu());
+const filterComponent = new FilterComponent(getFilter());
+const sortingComponent = new SortingComponent();
+const boardComponent = new BoardComponent(events);
 
 render(tripHeaderElement, tripInfoComponent.getElement(), RenderPosition.AFTER_BEGIN);
 render(tripControlsElement.children[0], menuComponent.getElement(), RenderPosition.AFTER_END);
@@ -85,7 +85,7 @@ if (events.length) {
   render(boardComponent.getElement(), sortingComponent.getElement());
   [...groupEventsByDays(events)].forEach((day, index) => {
     const [dayTimestamp, dayEvents] = day;
-    const tripDay = new TripDay(dayTimestamp, index + 1);
+    const tripDay = new TripDayComponent(dayTimestamp, index + 1);
     const eventsElement = tripDay.getElement().querySelector(`.trip-events__list`);
 
     dayEvents.forEach((event) => {
@@ -95,7 +95,7 @@ if (events.length) {
     render(boardComponent.getElement(), tripDay.getElement());
   });
 } else {
-  const noEventsComponent = new NoEvents();
+  const noEventsComponent = new NoEventsComponent();
 
   render(boardComponent.getElement(), noEventsComponent.getElement());
 }

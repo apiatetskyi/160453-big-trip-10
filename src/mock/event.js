@@ -31,7 +31,7 @@ const getRandomLocation = (locations, eventType) => {
  *
  * @type {number}
  */
-let lastEventData = Date.now();
+let lastEventDate = Date.now();
 
 
 /**
@@ -80,8 +80,8 @@ export const getEvent = () => {
 
   const dateStart = roundToStep(
       getRandomNumber(
-          lastEventData,
-          lastEventData + getRandomNumber(2, 3) * MillisecondsEnum.HOUR
+          lastEventDate,
+          lastEventDate + getRandomNumber(2, 3) * MillisecondsEnum.HOUR
       ),
       30 * MillisecondsEnum.MINUTE
   );
@@ -96,7 +96,7 @@ export const getEvent = () => {
 
   const type = getRandomType(EventTypeEnum);
 
-  lastEventData = dateEnd;
+  lastEventDate = dateEnd;
 
   return {
     location: getRandomLocation(LOCATIONS, type.code),

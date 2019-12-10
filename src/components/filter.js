@@ -1,6 +1,12 @@
-import {createElement} from '../utils';
+import BaseComponent from '../base/base-component';
 
-export default class Filter {
+/**
+ * Class representing trip filter.
+ *
+ * @class FilterComponent
+ * @extends BaseComponent
+ */
+export default class FilterComponent extends BaseComponent {
 
   /**
    * Create a filter.
@@ -8,28 +14,9 @@ export default class Filter {
    * @param {Array} filter
    */
   constructor(filter) {
-    this._element = null;
+    super();
+
     this._filter = filter;
-  }
-
-  /**
-   * Get reference to filter element.
-   *
-   * @return {HTMLElement}
-   */
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  /**
-   * Remove reference to filter element.
-   */
-  removeElement() {
-    this._element = null;
   }
 
   /**

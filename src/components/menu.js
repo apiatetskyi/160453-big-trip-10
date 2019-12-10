@@ -1,6 +1,12 @@
-import {createElement} from '../utils';
+import BaseComponent from '../base/base-component';
 
-export default class Menu {
+/**
+ * Class representing menu.
+ *
+ * @class MenuComponent
+ * @extends BaseComponent
+ */
+export default class MenuComponent extends BaseComponent {
 
   /**
    * Create a menu.
@@ -8,28 +14,9 @@ export default class Menu {
    * @param {Array} menu
    */
   constructor(menu) {
-    this._element = null;
+    super();
+
     this._menu = menu;
-  }
-
-  /**
-   * Get reference to filter element.
-   *
-   * @return {HTMLElement}
-   */
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  /**
-   * Remove reference to filter element.
-   */
-  removeElement() {
-    this._element = null;
   }
 
   /**

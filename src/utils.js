@@ -133,7 +133,7 @@ const getEventPlaceholder = (type) => {
  *
  * @param {number} diff Difference between dateStart dateEnd in milliseconds.
  *
- * @return {string} Event duration string for template
+ * @return {string} EventComponent duration string for template
  */
 const getEventDurationString = (diff) => {
   const dateParts = [MillisecondsEnum.DAY, MillisecondsEnum.HOUR, MillisecondsEnum.MINUTE];

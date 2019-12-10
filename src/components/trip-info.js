@@ -1,12 +1,15 @@
 import moment from 'moment';
-import {createElement} from '../utils';
+import BaseComponent from '../base/base-component';
 
 const SETTER_ERROR_MESSAGE = `This is readonly property.`;
 
 /**
  * Class representing trip info.
+ *
+ * @class TripInfoComponent
+ * @extends BaseComponent
  */
-export default class TripInfo {
+export default class TripInfoComponent extends BaseComponent {
 
   /**
    * Create a trip info.
@@ -14,6 +17,8 @@ export default class TripInfo {
    * @param {Array} events
    */
   constructor(events) {
+    super();
+
     this._events = events;
   }
 
@@ -31,26 +36,6 @@ export default class TripInfo {
 
   set dateEnd(value) {
     throw new Error(SETTER_ERROR_MESSAGE);
-  }
-
-  /**
-   * Get reference to trip info element.
-   *
-   * @return {HTMLElement}
-   */
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  /**
-   * Remove reference to trip info element.
-   */
-  removeElement() {
-    this._element = null;
   }
 
   /**

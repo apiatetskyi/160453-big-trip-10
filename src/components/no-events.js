@@ -1,36 +1,12 @@
-import {createElement} from '../utils';
+import BaseComponent from '../base/base-component';
 
 /**
- * Representing no events placeholder
+ * Class representing no events placeholder.
+ *
+ * @class NoEventsComponent
+ * @extends BaseComponent
  */
-export default class NoEvents {
-
-  /**
-   * Create a no events placeholder.
-   */
-  constructor() {
-    this._element = null;
-  }
-
-  /**
-   * Get reference to board element.
-   *
-   * @return {HTMLElement}
-   */
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  /**
-   * Remove reference to no events element.
-   */
-  removeElement() {
-    this._element = null;
-  }
+export default class NoEventsComponent extends BaseComponent {
 
   /**
    * Get string template for no events placeholder.

@@ -1,10 +1,14 @@
 import moment from 'moment';
-import {createElement, capitalize, getEventDurationString, getEventPlaceholder} from '../utils';
+import BaseComponent from '../base/base-component';
+import {capitalize, getEventDurationString, getEventPlaceholder} from '../utils';
 
 /**
  * Representing trip event class.
+ *
+ * @class EventComponent
+ * @extends BaseComponent
  */
-export default class Event {
+export default class EventComponent extends BaseComponent {
 
   /**
    * Create a trip event.
@@ -12,28 +16,9 @@ export default class Event {
    * @param {Object} event
    */
   constructor(event) {
-    this._element = null;
+    super();
+
     this._event = event;
-  }
-
-  /**
-   * Get reference to trip event element.
-   *
-   * @return {HTMLElement}
-   */
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  /**
-   * Remove reference to trip event element.
-   */
-  removeElement() {
-    this._element = null;
   }
 
   /**

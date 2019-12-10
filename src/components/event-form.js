@@ -1,11 +1,15 @@
 import moment from 'moment';
+import BaseComponent from '../base/base-component';
 import {LOCATIONS, activities, transfers} from '../mock/consts';
-import {capitalize, createElement, getEventPlaceholder} from '../utils';
+import {capitalize, getEventPlaceholder} from '../utils';
 
 /**
- * Representing trip event form class.
+ * Class representing trip event form.
+ *
+ * @class EventFormComponent
+ * @extends BaseComponent
  */
-export default class EventForm {
+export default class EventFormComponent extends BaseComponent {
 
   /**
    * Create a trip event form.
@@ -13,28 +17,9 @@ export default class EventForm {
    * @param {Object} event
    */
   constructor(event) {
-    this._element = null;
+    super();
+
     this._event = event;
-  }
-
-  /**
-   * Get reference to trip event form element.
-   *
-   * @return {HTMLElement}
-   */
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  /**
-   * Remove reference to trip event form element.
-   */
-  removeElement() {
-    this._element = null;
   }
 
   /**
