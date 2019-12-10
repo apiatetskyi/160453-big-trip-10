@@ -1,17 +1,18 @@
+import BaseComponent from './base/base-component';
 import {RenderPosition, MillisecondsEnum} from './mock/consts';
 
 /**
  * Render HTML string to container.
  *
- * @param {HTMLElement} container
- * @param {string|HTMLElement} template
- * @param {string} [position=beforeEnd]
+ * @param {HTMLElement|BaseComponent} container
+ * @param {BaseComponent} component
+ * @param {string} [position=beforeend]
  */
-const render = (container, template, position = RenderPosition.BEFORE_END) => {
-  if (typeof template === `string`) {
-    container.insertAdjacentHTML(position, template);
+const render = (container, component, position = RenderPosition.BEFORE_END) => {
+  if (container instanceof BaseComponent) {
+    container.getElement().insertAdjacentElement(position, component.getElement());
   } else {
-    container.insertAdjacentElement(position, template);
+    container.insertAdjacentElement(position, component.getElement());
   }
 };
 

@@ -62,7 +62,7 @@ const renderEvent = (parentElement, event) => {
     toggleEventForm();
   });
 
-  render(parentElement, eventComponent.getElement());
+  render(parentElement, eventComponent);
 };
 
 const tripHeaderElement = document.querySelector(`.trip-main`);
@@ -76,13 +76,13 @@ const filterComponent = new FilterComponent(getFilter());
 const sortingComponent = new SortingComponent();
 const boardComponent = new BoardComponent(events);
 
-render(tripHeaderElement, tripInfoComponent.getElement(), RenderPosition.AFTER_BEGIN);
-render(tripControlsElement.children[0], menuComponent.getElement(), RenderPosition.AFTER_END);
-render(tripControlsElement.children[1], filterComponent.getElement(), RenderPosition.AFTER_END);
-render(tripContainerElement, boardComponent.getElement());
+render(tripHeaderElement, tripInfoComponent, RenderPosition.AFTER_BEGIN);
+render(tripControlsElement.children[0], menuComponent, RenderPosition.AFTER_END);
+render(tripControlsElement.children[1], filterComponent, RenderPosition.AFTER_END);
+render(tripContainerElement, boardComponent);
 
 if (events.length) {
-  render(boardComponent.getElement(), sortingComponent.getElement());
+  render(boardComponent, sortingComponent);
   [...groupEventsByDays(events)].forEach((day, index) => {
     const [dayTimestamp, dayEvents] = day;
     const tripDay = new TripDayComponent(dayTimestamp, index + 1);
@@ -92,10 +92,10 @@ if (events.length) {
       renderEvent(eventsElement, event);
     });
 
-    render(boardComponent.getElement(), tripDay.getElement());
+    render(boardComponent, tripDay);
   });
 } else {
   const noEventsComponent = new NoEventsComponent();
 
-  render(boardComponent.getElement(), noEventsComponent.getElement());
+  render(boardComponent, noEventsComponent);
 }
