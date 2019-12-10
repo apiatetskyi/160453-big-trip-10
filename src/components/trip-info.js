@@ -1,6 +1,8 @@
 import moment from 'moment';
 import {createElement} from '../utils';
 
+const SETTER_ERROR_MESSAGE = `This is readonly property.`;
+
 /**
  * Class representing trip info.
  */
@@ -20,7 +22,7 @@ export default class TripInfo {
   }
 
   set dateStart(value) {
-    throw new Error(`This is readonly property.`);
+    throw new Error(SETTER_ERROR_MESSAGE);
   }
 
   get dateEnd() {
@@ -28,7 +30,7 @@ export default class TripInfo {
   }
 
   set dateEnd(value) {
-    throw new Error(`This is readonly property.`);
+    throw new Error(SETTER_ERROR_MESSAGE);
   }
 
   /**
@@ -76,12 +78,16 @@ export default class TripInfo {
    * @private
    */
   _getPeriodTemplate() {
-    const dateStart = moment(this.dateStart);
-    const dateEnd = moment(this.dateEnd);
+    if (this._events.length) {
+      const dateStart = moment(this.dateStart);
+      const dateEnd = moment(this.dateEnd);
 
-    return dateStart.format(`MMM`) === dateEnd.format(`MMM`)
-      ? `${dateStart.format(`MMM`).toUpperCase()} ${dateStart.format(`DD`)} &nbsp;&mdash;&nbsp; ${dateEnd.format(`DD`)}`
-      : ``;
+      return dateStart.format(`MMM`) === dateEnd.format(`MMM`)
+        ? `${dateStart.format(`MMM`).toUpperCase()} ${dateStart.format(`DD`)} &nbsp;&mdash;&nbsp; ${dateEnd.format(`DD`)}`
+        : ``;
+    } else {
+      return ``;
+    }
   }
 
   /**
@@ -92,11 +98,15 @@ export default class TripInfo {
    * @private
    */
   _getRouteTemplate() {
-    const cities = this._events.filter((event) => event.location.type === `city`).map((event) => event.location);
+    if (this._events.length) {
+      const cities = this._events.filter((event) => event.location.type === `city`).map((event) => event.location);
 
-    return cities.length > 3
-      ? `${cities[0].name} &mdash; ... &mdash; ${cities[cities.length - 1].name}`
-      : cities.map((city) => city.name).join(` &mdash; `);
+      return cities.length > 3
+        ? `${cities[0].name} &mdash; ... &mdash; ${cities[cities.length - 1].name}`
+        : cities.map((city) => city.name).join(` &mdash; `);
+    } else {
+      return ``;
+    }
   }
 
   /**
@@ -107,15 +117,17 @@ export default class TripInfo {
    * @private
    */
   _getPrice() {
-    return this._events.reduce((sum, event) => {
-      const offersTotal = [...event.offers]
-        .filter((offer) => offer[1].isChecked)
-        .reduce((offersSum, offer) => {
-          return offersSum + offer[1].price;
-        }, 0);
+    return this._events
+      ? this._events.reduce((sum, event) => {
+        const offersTotal = [...event.offers]
+          .filter((offer) => offer[1].isChecked)
+          .reduce((offersSum, offer) => {
+            return offersSum + offer[1].price;
+          }, 0);
 
-      return sum + event.price + offersTotal;
-    }, 0);
+        return sum + event.price + offersTotal;
+      }, 0)
+      : 0;
   }
 
 }

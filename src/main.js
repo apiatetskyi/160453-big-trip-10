@@ -8,53 +8,94 @@ import Filter from './components/filter';
 import Menu from './components/menu';
 import Event from './components/event';
 import EventForm from './components/event-form';
+import NoEvents from './components/no-events';
 
 import {getEvents} from './mock/event';
 import {getMenu} from './mock/menu';
 import {getFilter} from './mock/filter';
-import {RenderPosition} from './mock/consts';
+import {RenderPosition, KeyboardEnum} from './mock/consts';
 
 const EVENTS_AMOUNT = 10;
 
-const tripHeaderElement = document.querySelector(`.trip-main`);
-const tripControlsElement = document.querySelector(`.trip-controls`);
-const tripEventsElement = document.querySelector(`.trip-events`);
-const events = getEvents(EVENTS_AMOUNT).sort((current, next) => current.dateStart - next.dateStart);
+/**
+ * Render trip event and event form. Handle toggling between them.
+ *
+ * @param {HTMLElement} parentElement
+ * @param {Object} event
+ */
+const renderEvent = (parentElement, event) => {
+  const eventComponent = new Event(event);
+  const eventFormComponent = new EventForm(event);
+  const editEventButton = eventComponent.getElement().querySelector(`.event__rollup-btn`);
+  const eventFormElement = eventFormComponent.getElement().querySelector(`.event--edit`);
 
-const tripInfo = new TripInfo(events);
-const menu = new Menu(getMenu());
-const filter = new Filter(getFilter());
-const sorting = new Sorting();
-const board = new Board(events);
+  /**
+   * Escape key press handler.
+   *
+   * @param {KeyboardEvent} evt
+   */
+  const escapeKeyDownHandler = (evt) => {
+    if (evt.key === KeyboardEnum.ESC || evt.key === KeyboardEnum.ESCAPE) {
+      toggleEventForm();
 
-render(tripHeaderElement, tripInfo.getElement(), RenderPosition.AFTER_BEGIN);
-render(tripControlsElement.children[0], menu.getElement(), RenderPosition.AFTER_END);
-render(tripControlsElement.children[1], filter.getElement(), RenderPosition.AFTER_END);
-render(tripEventsElement, board.getElement());
-render(tripEventsElement, sorting.getElement());
+      document.removeEventListener(`keydown`, escapeKeyDownHandler);
+    }
+  };
 
-[...groupEventsByDays(events)].forEach((day, index) => {
-  const [dayTimestamp, dayEvents] = day;
-  const tripDay = new TripDay(dayTimestamp, index + 1);
-  const eventsElement = tripDay.getElement().querySelector(`.trip-events__list`);
+  /**
+   * Toggle event and event form components.
+   */
+  const toggleEventForm = () => {
+    if (parentElement.contains(eventComponent.getElement())) {
+      parentElement.replaceChild(eventFormComponent.getElement(), eventComponent.getElement());
+    } else {
+      parentElement.replaceChild(eventComponent.getElement(), eventFormComponent.getElement());
+    }
+  };
 
-  // TODO: remove `data` from variable name
-  dayEvents.forEach((eventData) => {
-    const event = new Event(eventData);
-    const eventForm = new EventForm(eventData);
-    const editEventButton = event.getElement().querySelector(`.event__rollup-btn`);
-    const eventFormElement = eventForm.getElement().querySelector(`.event--edit`);
-
-    editEventButton.addEventListener(`click`, () => {
-      eventsElement.replaceChild(eventForm.getElement(), event.getElement());
-    });
-
-    eventFormElement.addEventListener(`submit`, () => {
-      eventsElement.replaceChild(event.getElement(), eventForm.getElement());
-    });
-
-    render(eventsElement, event.getElement());
+  editEventButton.addEventListener(`click`, () => {
+    toggleEventForm();
+    document.addEventListener(`keydown`, escapeKeyDownHandler);
   });
 
-  render(board.getElement(), tripDay.getElement());
-});
+  eventFormElement.addEventListener(`submit`, () => {
+    toggleEventForm();
+  });
+
+  render(parentElement, eventComponent.getElement());
+};
+
+const tripHeaderElement = document.querySelector(`.trip-main`);
+const tripControlsElement = document.querySelector(`.trip-controls`);
+const tripContainerElement = document.querySelector(`.page-main .page-body__container`);
+const events = getEvents(EVENTS_AMOUNT).sort((current, next) => current.dateStart - next.dateStart);
+
+const tripInfoComponent = new TripInfo(events);
+const menuComponent = new Menu(getMenu());
+const filterComponent = new Filter(getFilter());
+const sortingComponent = new Sorting();
+const boardComponent = new Board(events);
+
+render(tripHeaderElement, tripInfoComponent.getElement(), RenderPosition.AFTER_BEGIN);
+render(tripControlsElement.children[0], menuComponent.getElement(), RenderPosition.AFTER_END);
+render(tripControlsElement.children[1], filterComponent.getElement(), RenderPosition.AFTER_END);
+render(tripContainerElement, boardComponent.getElement());
+
+if (events.length) {
+  render(boardComponent.getElement(), sortingComponent.getElement());
+  [...groupEventsByDays(events)].forEach((day, index) => {
+    const [dayTimestamp, dayEvents] = day;
+    const tripDay = new TripDay(dayTimestamp, index + 1);
+    const eventsElement = tripDay.getElement().querySelector(`.trip-events__list`);
+
+    dayEvents.forEach((event) => {
+      renderEvent(eventsElement, event);
+    });
+
+    render(boardComponent.getElement(), tripDay.getElement());
+  });
+} else {
+  const noEventsComponent = new NoEvents();
+
+  render(boardComponent.getElement(), noEventsComponent.getElement());
+}

@@ -1,18 +1,15 @@
 import {createElement} from '../utils';
 
 /**
- * Class representing trip board.
+ * Representing no events placeholder
  */
-export default class Board {
+export default class NoEvents {
 
   /**
-   * Create a board.
-   *
-   * @param {Array} events
+   * Create a no events placeholder.
    */
-  constructor(events) {
+  constructor() {
     this._element = null;
-    this._events = events;
   }
 
   /**
@@ -29,22 +26,18 @@ export default class Board {
   }
 
   /**
-   * Remove reference to board element.
+   * Remove reference to no events element.
    */
   removeElement() {
     this._element = null;
   }
 
   /**
-   * Get string template for board.
+   * Get string template for no events placeholder.
    *
    * @return {string}
    */
   getTemplate() {
-    return (
-      `<section class="trip-events">
-          <h2 class="visually-hidden">Trip events</h2>
-        </section>`
-    );
+    return `<p class="trip-events__msg">Click New Event to create your first point</p>`;
   }
 }

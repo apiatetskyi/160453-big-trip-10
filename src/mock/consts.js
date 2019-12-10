@@ -143,13 +143,26 @@ const RenderPosition = Object.freeze({
   BEFORE_END: `beforeend`,
 });
 
+/**
+ * Enum for keyboard.
+ *
+ * @readonly
+ * @enum {string}
+ */
+const KeyboardEnum = Object.freeze({
+  ESC: `Esc`,
+  ESCAPE: `Escape`,
+  ENTER: `Enter`,
+});
+
 const activities = Object.values(EventTypeEnum).filter((type) => type.group === `activity`);
 const transfers = Object.values(EventTypeEnum).filter((type) => type.group === `transfer`);
 
 export {
   EventTypeEnum,
-  LOCATIONS,
   MillisecondsEnum,
+  KeyboardEnum,
+  LOCATIONS,
   RenderPosition,
   activities,
   transfers,
