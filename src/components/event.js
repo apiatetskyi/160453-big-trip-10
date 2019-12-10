@@ -68,6 +68,16 @@ export default class EventComponent extends BaseComponent {
   }
 
   /**
+   * Handler edit button click.
+   *
+   * @param {Function} handler
+   */
+  setEditButtonClickHandler(handler) {
+    this.getElement().querySelector(`.event__rollup-btn`)
+      .addEventListener(`click`, handler);
+  }
+
+  /**
    * Get trip event offers template.
    *
    * @return {string}

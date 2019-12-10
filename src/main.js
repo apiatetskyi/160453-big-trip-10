@@ -27,8 +27,6 @@ const EVENTS_AMOUNT = 10;
 const renderEvent = (parentElement, event) => {
   const eventComponent = new EventComponent(event);
   const eventFormComponent = new EventFormComponent(event);
-  const editEventButton = eventComponent.getElement().querySelector(`.event__rollup-btn`);
-  const eventFormElement = eventFormComponent.getElement().querySelector(`.event--edit`);
 
   /**
    * Escape key press handler.
@@ -42,14 +40,21 @@ const renderEvent = (parentElement, event) => {
     }
   };
 
-  editEventButton.addEventListener(`click`, () => {
-    replace(eventFormComponent, eventComponent);
-    document.addEventListener(`keydown`, escapeKeyDownHandler);
-  });
+  eventFormComponent.setSubmitHandler((evt) => {
+    evt.preventDefault();
 
-  eventFormElement.addEventListener(`submit`, () => {
     replace(eventComponent, eventFormComponent);
     document.removeEventListener(`keydown`, escapeKeyDownHandler);
+  });
+
+  eventFormComponent.setCloseButtonClickHandler(() => {
+    replace(eventComponent, eventFormComponent);
+    document.removeEventListener(`keydown`, escapeKeyDownHandler);
+  });
+
+  eventComponent.setEditButtonClickHandler(() => {
+    replace(eventFormComponent, eventComponent);
+    document.addEventListener(`keydown`, escapeKeyDownHandler);
   });
 
   render(parentElement, eventComponent);

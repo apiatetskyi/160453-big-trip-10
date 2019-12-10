@@ -124,6 +124,26 @@ export default class EventFormComponent extends BaseComponent {
   }
 
   /**
+   * Handler close button click.
+   *
+   * @param {Function} handler
+   */
+  setCloseButtonClickHandler(handler) {
+    this.getElement().querySelector(`.event__rollup-btn`)
+      .addEventListener(`click`, handler);
+  }
+
+  /**
+   * Handler for submit.
+   *
+   * @param {Function} handler
+   */
+  setSubmitHandler(handler) {
+    this.getElement().querySelector(`form`)
+      .addEventListener(`submit`, handler);
+  }
+
+  /**
    * Get trip event form offers template.
    *
    * @return {string}
