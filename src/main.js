@@ -1,4 +1,5 @@
-import {render, groupEventsByDays} from './utils';
+import {groupEventsByDays} from './utils/common';
+import {render} from './utils/render';
 
 import BoardComponent from './components/board';
 import TripDayComponent from './components/trip-day';

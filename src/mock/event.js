@@ -1,5 +1,5 @@
 import {EventTypeEnum, MillisecondsEnum, LOCATIONS} from './consts';
-import {getRandomDescription, getRandomNumber, roundToStep} from '../utils';
+import {getRandomDescription, getRandomNumber, roundToStep} from '../utils/common';
 
 /**
  * @param {EventType} types

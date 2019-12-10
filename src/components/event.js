@@ -1,6 +1,6 @@
 import moment from 'moment';
 import BaseComponent from '../base/base-component';
-import {capitalize, getEventDurationString, getEventPlaceholder} from '../utils';
+import {capitalize, getEventDurationString, getEventPlaceholder} from '../utils/common';
 
 /**
  * Representing trip event class.

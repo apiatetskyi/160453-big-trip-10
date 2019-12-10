@@ -1,7 +1,7 @@
 import moment from 'moment';
 import BaseComponent from '../base/base-component';
 import {LOCATIONS, activities, transfers} from '../mock/consts';
-import {capitalize, getEventPlaceholder} from '../utils';
+import {capitalize, getEventPlaceholder} from '../utils/common';
 
 /**
  * Class representing trip event form.
