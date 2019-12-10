@@ -1,5 +1,5 @@
 import {groupEventsByDays} from './utils/common';
-import {render} from './utils/render';
+import {render, replace, RenderPositionEnum} from './utils/render';
 
 import BoardComponent from './components/board';
 import TripDayComponent from './components/trip-day';
@@ -14,7 +14,7 @@ import NoEventsComponent from './components/no-events';
 import {getEvents} from './mock/event';
 import {getMenu} from './mock/menu';
 import {getFilter} from './mock/filter';
-import {RenderPosition, KeyboardEnum} from './mock/consts';
+import {KeyboardEnum} from './mock/consts';
 
 const EVENTS_AMOUNT = 10;
 
@@ -37,30 +37,19 @@ const renderEvent = (parentElement, event) => {
    */
   const escapeKeyDownHandler = (evt) => {
     if (evt.key === KeyboardEnum.ESC || evt.key === KeyboardEnum.ESCAPE) {
-      toggleEventForm();
-
+      replace(eventComponent, eventFormComponent);
       document.removeEventListener(`keydown`, escapeKeyDownHandler);
     }
   };
 
-  /**
-   * Toggle event and event form components.
-   */
-  const toggleEventForm = () => {
-    if (parentElement.contains(eventComponent.getElement())) {
-      parentElement.replaceChild(eventFormComponent.getElement(), eventComponent.getElement());
-    } else {
-      parentElement.replaceChild(eventComponent.getElement(), eventFormComponent.getElement());
-    }
-  };
-
   editEventButton.addEventListener(`click`, () => {
-    toggleEventForm();
+    replace(eventFormComponent, eventComponent);
     document.addEventListener(`keydown`, escapeKeyDownHandler);
   });
 
   eventFormElement.addEventListener(`submit`, () => {
-    toggleEventForm();
+    replace(eventComponent, eventFormComponent);
+    document.removeEventListener(`keydown`, escapeKeyDownHandler);
   });
 
   render(parentElement, eventComponent);
@@ -77,13 +66,14 @@ const filterComponent = new FilterComponent(getFilter());
 const sortingComponent = new SortingComponent();
 const boardComponent = new BoardComponent(events);
 
-render(tripHeaderElement, tripInfoComponent, RenderPosition.AFTER_BEGIN);
-render(tripControlsElement.children[0], menuComponent, RenderPosition.AFTER_END);
-render(tripControlsElement.children[1], filterComponent, RenderPosition.AFTER_END);
+render(tripHeaderElement, tripInfoComponent, RenderPositionEnum.AFTER_BEGIN);
+render(tripControlsElement.children[0], menuComponent, RenderPositionEnum.AFTER_END);
+render(tripControlsElement.children[1], filterComponent, RenderPositionEnum.AFTER_END);
 render(tripContainerElement, boardComponent);
 
 if (events.length) {
   render(boardComponent, sortingComponent);
+
   [...groupEventsByDays(events)].forEach((day, index) => {
     const [dayTimestamp, dayEvents] = day;
     const tripDay = new TripDayComponent(dayTimestamp, index + 1);
