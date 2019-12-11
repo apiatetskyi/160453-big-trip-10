@@ -9,17 +9,6 @@ import BaseComponent from '../base/base-component';
 export default class BoardComponent extends BaseComponent {
 
   /**
-   * Create a board.
-   *
-   * @param {Array} events
-   */
-  constructor(events) {
-    super();
-
-    this._events = events;
-  }
-
-  /**
    * Get string template for board.
    *
    * @return {string}
