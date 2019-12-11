@@ -22,6 +22,15 @@ export default class EventComponent extends BaseComponent {
   }
 
   /**
+   * Handler edit button click.
+   *
+   * @param {Function} callback
+   */
+  set onEdit(callback) {
+    this.addHandler(`.event__rollup-btn`, `click`, callback);
+  }
+
+  /**
    * Get string template for trip event.
    *
    * @return {string}
@@ -65,16 +74,6 @@ export default class EventComponent extends BaseComponent {
         </div>
       </li>`
     );
-  }
-
-  /**
-   * Handler edit button click.
-   *
-   * @param {Function} handler
-   */
-  setEditButtonClickHandler(handler) {
-    this.getElement().querySelector(`.event__rollup-btn`)
-      .addEventListener(`click`, handler);
   }
 
   /**

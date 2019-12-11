@@ -17,6 +17,8 @@ export default class BaseComponent {
     }
 
     this._element = null;
+    this._handlers = [];
+    this._isHandlersBind = false;
   }
 
   /**
@@ -37,6 +39,8 @@ export default class BaseComponent {
    */
   removeElement() {
     this._element = null;
+
+    this.unbindHandlers();
   }
 
   /**
@@ -48,5 +52,51 @@ export default class BaseComponent {
    */
   getTemplate() {
     throw new Error(`You have to implement the method getTemplate!`);
+  }
+
+  /**
+   * Bind component event handlers.
+   */
+  bindHandlers() {
+    if (!this._isHandlersBind) {
+      this._handlers.forEach((handler) => {
+        const {element, eventType, callback} = handler;
+
+        if (element && eventType && callback) {
+          element.addEventListener(eventType, callback);
+        }
+      });
+
+      this._isHandlersBind = true;
+    }
+  }
+
+  /**
+   * Unbind component event handlers.
+   */
+  unbindHandlers() {
+    if (this._isHandlersBind) {
+      this._handlers.forEach((handler) => {
+        const {element, eventType, callback} = handler;
+
+        if (element && eventType && callback) {
+          element.removeEventListener(eventType, callback);
+        }
+      });
+
+      this._isHandlersBind = false;
+    }
+  }
+
+  /**
+   * Add handler to component.
+   *
+   * @param {string} selector
+   * @param {string} eventType
+   * @param {function} callback
+   */
+  addHandler(selector, eventType, callback) {
+    const element = this.getElement().querySelector(selector);
+    this._handlers.push({element, eventType, callback});
   }
 }

@@ -28,6 +28,17 @@ const renderEvent = (parentElement, event) => {
   const eventComponent = new EventComponent(event);
   const eventFormComponent = new EventFormComponent(event);
 
+  eventComponent.onEdit = () => {
+    replace(eventFormComponent, eventComponent);
+    document.addEventListener(`keydown`, escapeKeyDownHandler);
+  };
+
+  eventFormComponent.onClose = (evt) => {
+    evt.preventDefault();
+    replace(eventComponent, eventFormComponent);
+    document.removeEventListener(`keydown`, escapeKeyDownHandler);
+  };
+
   /**
    * Escape key press handler.
    *
@@ -39,23 +50,6 @@ const renderEvent = (parentElement, event) => {
       document.removeEventListener(`keydown`, escapeKeyDownHandler);
     }
   };
-
-  eventFormComponent.setSubmitHandler((evt) => {
-    evt.preventDefault();
-
-    replace(eventComponent, eventFormComponent);
-    document.removeEventListener(`keydown`, escapeKeyDownHandler);
-  });
-
-  eventFormComponent.setCloseButtonClickHandler(() => {
-    replace(eventComponent, eventFormComponent);
-    document.removeEventListener(`keydown`, escapeKeyDownHandler);
-  });
-
-  eventComponent.setEditButtonClickHandler(() => {
-    replace(eventFormComponent, eventComponent);
-    document.addEventListener(`keydown`, escapeKeyDownHandler);
-  });
 
   render(parentElement, eventComponent);
 };
