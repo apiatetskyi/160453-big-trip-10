@@ -22,6 +22,11 @@ export default class EventFormComponent extends BaseComponent {
     this._event = event;
   }
 
+  /**
+   * Setter for component closing.
+   *
+   * @param {Function} callback
+   */
   set onClose(callback) {
     this.addHandler(`form`, `submit`, callback);
     this.addHandler(`.event__rollup-btn`, `click`, callback);

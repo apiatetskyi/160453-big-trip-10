@@ -22,7 +22,7 @@ export default class EventComponent extends BaseComponent {
   }
 
   /**
-   * Handler edit button click.
+   * Setter for component editing.
    *
    * @param {Function} callback
    */
