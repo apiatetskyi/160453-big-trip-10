@@ -132,18 +132,6 @@ const MillisecondsEnum = Object.freeze({
 });
 
 /**
- * Enum for render position.
- *
- * @readonly
- * @enum {string}
- */
-const RenderPosition = Object.freeze({
-  AFTER_BEGIN: `afterbegin`,
-  AFTER_END: `afterend`,
-  BEFORE_END: `beforeend`,
-});
-
-/**
  * Enum for keyboard.
  *
  * @readonly
@@ -163,7 +151,6 @@ export {
   MillisecondsEnum,
   KeyboardEnum,
   LOCATIONS,
-  RenderPosition,
   activities,
   transfers,
 };

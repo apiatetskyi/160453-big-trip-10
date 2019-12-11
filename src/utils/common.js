@@ -1,28 +1,4 @@
-import {RenderPosition, MillisecondsEnum} from './mock/consts';
-
-/**
- * Render HTML string to container.
- *
- * @param {HTMLElement} container
- * @param {string|HTMLElement} template
- * @param {string} [position=beforeEnd]
- */
-const render = (container, template, position = RenderPosition.BEFORE_END) => {
-  if (typeof template === `string`) {
-    container.insertAdjacentHTML(position, template);
-  } else {
-    container.insertAdjacentElement(position, template);
-  }
-};
-
-/**
- * Create HTMLElement from template string.
- *
- * @param {string} template
- *
- * @return {HTMLElement}
- */
-const createElement = (template) => document.createRange().createContextualFragment(template).firstChild;
+import {MillisecondsEnum} from '../mock/consts';
 
 /**
  * @param {Array} array
@@ -133,7 +109,7 @@ const getEventPlaceholder = (type) => {
  *
  * @param {number} diff Difference between dateStart dateEnd in milliseconds.
  *
- * @return {string} Event duration string for template
+ * @return {string} EventComponent duration string for template
  */
 const getEventDurationString = (diff) => {
   const dateParts = [MillisecondsEnum.DAY, MillisecondsEnum.HOUR, MillisecondsEnum.MINUTE];
@@ -153,11 +129,9 @@ const getEventDurationString = (diff) => {
 };
 
 export {
-  render,
   getEventPlaceholder,
   shuffleArray,
   getRandomNumber,
-  createElement,
   getEventDurationString,
   getRandomDescription,
   groupEventsByDays,

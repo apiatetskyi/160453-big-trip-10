@@ -1,33 +1,12 @@
-import {createElement} from '../utils';
+import BaseComponent from '../base/base-component';
 
-export default class Sorting {
-
-  /**
-   * Create a sorting.
-   */
-  constructor() {
-    this._element = null;
-  }
-
-  /**
-   * Get reference to sorting element.
-   *
-   * @return {HTMLElement}
-   */
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  /**
-   * Remove reference to sorting element.
-   */
-  removeElement() {
-    this._element = null;
-  }
+/**
+ * Class representing trip sorting.
+ *
+ * @class SortingComponent
+ * @extends BaseComponent
+ */
+export default class SortingComponent extends BaseComponent {
 
   /**
    * Get string template for sorting.

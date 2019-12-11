@@ -1,10 +1,13 @@
 import moment from 'moment';
-import {createElement} from '../utils';
+import BaseComponent from '../base/base-component';
 
 /**
  * Class representing trip day.
+ *
+ * @class TripDayComponent
+ * @extends BaseComponent
  */
-export default class TripDay {
+export default class TripDayComponent extends BaseComponent {
 
   /**
    * Create a trip day.
@@ -13,29 +16,10 @@ export default class TripDay {
    * @param {number} counter
    */
   constructor(timestamp, counter) {
-    this._element = null;
+    super();
+
     this._counter = counter;
     this._timestamp = timestamp;
-  }
-
-  /**
-   * Get reference to trip day element.
-   *
-   * @return {HTMLElement}
-   */
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  /**
-   * Remove reference to trip day element.
-   */
-  removeElement() {
-    this._element = null;
   }
 
   /**

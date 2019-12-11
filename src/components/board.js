@@ -1,39 +1,12 @@
-import {createElement} from '../utils';
+import BaseComponent from '../base/base-component';
 
 /**
  * Class representing trip board.
+ *
+ * @class BoardComponent
+ * @extends BaseComponent
  */
-export default class Board {
-
-  /**
-   * Create a board.
-   *
-   * @param {Array} events
-   */
-  constructor(events) {
-    this._element = null;
-    this._events = events;
-  }
-
-  /**
-   * Get reference to board element.
-   *
-   * @return {HTMLElement}
-   */
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  /**
-   * Remove reference to board element.
-   */
-  removeElement() {
-    this._element = null;
-  }
+export default class BoardComponent extends BaseComponent {
 
   /**
    * Get string template for board.
