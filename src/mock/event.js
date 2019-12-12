@@ -1,4 +1,4 @@
-import {EventTypeEnum, MillisecondsEnum, LOCATIONS} from './consts';
+import {EventType, DurationType, LOCATIONS} from './consts';
 import {getRandomDescription, getRandomNumber, roundToStep} from '../utils/common';
 
 /**
@@ -81,20 +81,20 @@ export const getEvent = () => {
   const dateStart = roundToStep(
       getRandomNumber(
           lastEventDate,
-          lastEventDate + getRandomNumber(2, 3) * MillisecondsEnum.HOUR
+          lastEventDate + getRandomNumber(2, 3) * DurationType.HOUR
       ),
-      30 * MillisecondsEnum.MINUTE
+      30 * DurationType.MINUTE
   );
 
   const dateEnd = roundToStep(
       getRandomNumber(
-          dateStart + getRandomNumber(1, 2) * MillisecondsEnum.HOUR,
-          dateStart + getRandomNumber(2, 4) * MillisecondsEnum.HOUR
+          dateStart + getRandomNumber(1, 2) * DurationType.HOUR,
+          dateStart + getRandomNumber(2, 4) * DurationType.HOUR
       ),
-      30 * MillisecondsEnum.MINUTE
+      30 * DurationType.MINUTE
   );
 
-  const type = getRandomType(EventTypeEnum);
+  const type = getRandomType(EventType);
 
   lastEventDate = dateEnd;
 

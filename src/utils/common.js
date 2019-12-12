@@ -1,4 +1,4 @@
-import {MillisecondsEnum} from '../mock/consts';
+import {DurationType} from '../mock/consts';
 
 /**
  * @param {Array} array
@@ -112,7 +112,7 @@ const getEventPlaceholder = (type) => {
  * @return {string} EventComponent duration string for template
  */
 const getEventDurationString = (diff) => {
-  const dateParts = [MillisecondsEnum.DAY, MillisecondsEnum.HOUR, MillisecondsEnum.MINUTE];
+  const dateParts = [DurationType.DAY, DurationType.HOUR, DurationType.MINUTE];
   const dateFormats = [`D`, `H`, `M`];
 
   return dateParts.map((part, index) => {

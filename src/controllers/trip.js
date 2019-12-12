@@ -3,7 +3,7 @@ import EventFormComponent from '../components/event-form';
 import TripDayComponent from '../components/trip-day';
 import SortingComponent from '../components/sorting';
 import NoEventsComponent from '../components/no-events';
-import {KeyboardEnum} from '../mock/consts';
+import {KeyName} from '../mock/consts';
 import {render, replace} from '../utils/render';
 import {groupEventsByDays} from '../utils/common';
 
@@ -63,7 +63,7 @@ export default class TripController {
      * @param {KeyboardEvent} evt
      */
     const escapeKeyDownHandler = (evt) => {
-      if (evt.key === KeyboardEnum.ESC || evt.key === KeyboardEnum.ESCAPE) {
+      if (evt.key === KeyName.ESC || evt.key === KeyName.ESCAPE) {
         replace(eventComponent, eventFormComponent);
         document.removeEventListener(`keydown`, escapeKeyDownHandler);
       }
