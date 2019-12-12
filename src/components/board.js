@@ -16,8 +16,18 @@ export default class BoardComponent extends BaseComponent {
   getTemplate() {
     return (
       `<section class="trip-events">
-          <h2 class="visually-hidden">Trip events</h2>
-        </section>`
+        <h2 class="visually-hidden">Trip events</h2>
+        <ul class="trip-days"></ul>
+      </section>`
     );
+  }
+
+  /**
+   * Find container for trip days.
+   *
+   * @return {HTMLElement}
+   */
+  get tripDaysElement() {
+    return this.getElement().querySelector(`.trip-days`);
   }
 }

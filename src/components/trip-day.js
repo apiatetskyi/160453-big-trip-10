@@ -14,12 +14,14 @@ export default class TripDayComponent extends BaseComponent {
    *
    * @param {number} timestamp
    * @param {number} counter
+   * @param {boolean} showInfo
    */
-  constructor(timestamp, counter) {
+  constructor(timestamp, counter, showInfo = true) {
     super();
 
     this._counter = counter;
     this._timestamp = timestamp;
+    this._showInfo = showInfo;
   }
 
   /**
@@ -30,13 +32,26 @@ export default class TripDayComponent extends BaseComponent {
   getTemplate() {
     return (
       `<li class="trip-days__item  day">
-        <div class="day__info">
-          <span class="day__counter">${this._counter}</span>
-          <time class="day__date" datetime="${moment(this._timestamp).format(`YYYY-MM-DD`)}">${moment(this._timestamp).format(`MMM DD`)}</time>
-        </div>
-  
+        <div class="day__info">${this._getDayInfoTemplate()}</div>
+
         <ul class="trip-events__list"></ul>
       </li>`
     );
+  }
+
+  /**
+   * Get day info template.
+   *
+   * @return {string}
+   *
+   * @private
+   */
+  _getDayInfoTemplate() {
+    return this._showInfo
+      ? `<span class="day__counter">${this._counter}</span>
+        <time class="day__date" datetime="${moment(this._timestamp).format(`YYYY-MM-DD`)}">
+          ${moment(this._timestamp).format(`MMM DD`)}
+        </time>`
+      : ``;
   }
 }

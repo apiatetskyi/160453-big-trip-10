@@ -1,10 +1,10 @@
 import EventComponent from '../components/event';
 import EventFormComponent from '../components/event-form';
 import TripDayComponent from '../components/trip-day';
-import SortingComponent from '../components/sorting';
+import SortingComponent, {SortType} from '../components/sorting';
 import NoEventsComponent from '../components/no-events';
 import {KeyName} from '../mock/consts';
-import {render, replace} from '../utils/render';
+import {render, replace, RenderPosition} from '../utils/render';
 import {groupEventsByDays} from '../utils/common';
 
 /**
@@ -27,19 +27,13 @@ export default class TripController {
     if (events.length) {
       const sortingComponent = new SortingComponent();
 
-      render(this._boardComponent, sortingComponent);
+      sortingComponent.onClick = (evt) => {
+        this._sortingChangeHandler(evt.target.dataset.sortType, events);
+      };
 
-      [...groupEventsByDays(events)].forEach((day, index) => {
-        const [dayTimestamp, dayEvents] = day;
-        const tripDay = new TripDayComponent(dayTimestamp, index + 1);
-        const eventsElement = tripDay.getElement().querySelector(`.trip-events__list`);
+      render(this._boardComponent, sortingComponent, RenderPosition.AFTER_BEGIN);
+      this._renderGroupedEvents(events);
 
-        dayEvents.forEach((event) => {
-          this._renderEvent(eventsElement, event);
-        });
-
-        render(this._boardComponent, tripDay);
-      });
     } else {
       const noEventsComponent = new NoEventsComponent();
 
@@ -81,5 +75,75 @@ export default class TripController {
     };
 
     render(parentElement, eventComponent);
+  }
+
+  /**
+   * Render events, that grouped by trip day.
+   *
+   * @param {Array} events
+   *
+   * @private
+   */
+  _renderGroupedEvents(events) {
+    [...groupEventsByDays(events)].forEach((day, index) => {
+      const [dayTimestamp, dayEvents] = day;
+      const tripDay = new TripDayComponent(dayTimestamp, index + 1);
+      const eventsElement = tripDay.getElement().querySelector(`.trip-events__list`);
+
+      dayEvents.forEach((event) => {
+        this._renderEvent(eventsElement, event);
+      });
+
+      render(this._boardComponent.tripDaysElement, tripDay);
+    });
+  }
+
+  /**
+   * Render list of events without grouping.
+   *
+   * @param {Array} events
+   *
+   * @private
+   */
+  _renderEvents(events) {
+    const tripDay = new TripDayComponent(0, 0, false);
+    const eventsElement = tripDay.getElement().querySelector(`.trip-events__list`);
+
+    events.forEach((event) => {
+      this._renderEvent(eventsElement, event);
+    });
+
+    render(this._boardComponent.tripDaysElement, tripDay);
+  }
+
+  /**
+   * @param {string} sortType
+   * @param {Array} events
+   *
+   * @private
+   */
+  _sortingChangeHandler(sortType, events) {
+    let sortedEvents = [];
+
+    switch (sortType) {
+      case SortType.DURATION :
+        sortedEvents = events.slice().sort((a, b) => (b.dateEnd - b.dateStart) - (a.dateEnd - a.dateStart));
+        break;
+      case SortType.PRICE :
+        sortedEvents = events.slice().sort((a, b) => b.price - a.price); // TODO: should i count price with offers?
+        break;
+      case SortType.DEFAULT :
+        sortedEvents = events.slice();
+        break;
+    }
+
+    this._boardComponent.tripDaysElement.innerHTML = ``;
+
+    if (sortType === SortType.DEFAULT) {
+      this._renderGroupedEvents(sortedEvents);
+    } else {
+      this._renderEvents(sortedEvents);
+    }
+
   }
 }

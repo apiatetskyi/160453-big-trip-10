@@ -128,11 +128,29 @@ const getEventDurationString = (diff) => {
   }).join(`\n`);
 };
 
+/**
+ * Calculate summary event price.
+ *
+ * @param {Object} event
+ *
+ * @return {number}
+ */
+const calculateEventTotalPrice = (event) => {
+  const offersTotal = [...event.offers]
+    .filter((offer) => offer[1].isChecked)
+    .reduce((offersSum, offer) => {
+      return offersSum + offer[1].price;
+    }, 0);
+
+  return event.price + offersTotal;
+};
+
 export {
   getEventPlaceholder,
   shuffleArray,
   getRandomNumber,
   getEventDurationString,
+  calculateEventTotalPrice,
   getRandomDescription,
   groupEventsByDays,
   capitalize,

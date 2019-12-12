@@ -6,7 +6,7 @@ import BaseComponent from '../base/base-component';
  * @readonly
  * @enum {string}
  */
-const RenderPositionEnum = Object.freeze({
+const RenderPosition = Object.freeze({
   AFTER_BEGIN: `afterbegin`,
   AFTER_END: `afterend`,
   BEFORE_END: `beforeend`,
@@ -28,7 +28,7 @@ const createElement = (template) => document.createRange().createContextualFragm
  * @param {BaseComponent} component
  * @param {string} [position=beforeend]
  */
-const render = (container, component, position = RenderPositionEnum.BEFORE_END) => {
+const render = (container, component, position = RenderPosition.BEFORE_END) => {
   if (container instanceof BaseComponent) {
     container.getElement().insertAdjacentElement(position, component.getElement());
   } else {
@@ -74,5 +74,5 @@ export {
   render,
   remove,
   replace,
-  RenderPositionEnum,
+  RenderPosition,
 };
