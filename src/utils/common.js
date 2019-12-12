@@ -1,4 +1,4 @@
-import {MillisecondsEnum} from '../mock/consts';
+import {DurationType} from '../mock/consts';
 
 /**
  * @param {Array} array
@@ -112,7 +112,7 @@ const getEventPlaceholder = (type) => {
  * @return {string} EventComponent duration string for template
  */
 const getEventDurationString = (diff) => {
-  const dateParts = [MillisecondsEnum.DAY, MillisecondsEnum.HOUR, MillisecondsEnum.MINUTE];
+  const dateParts = [DurationType.DAY, DurationType.HOUR, DurationType.MINUTE];
   const dateFormats = [`D`, `H`, `M`];
 
   return dateParts.map((part, index) => {
@@ -128,11 +128,29 @@ const getEventDurationString = (diff) => {
   }).join(`\n`);
 };
 
+/**
+ * Calculate summary event price.
+ *
+ * @param {Object} event
+ *
+ * @return {number}
+ */
+const calculateEventTotalPrice = (event) => {
+  const offersTotal = [...event.offers]
+    .filter((offer) => offer[1].isChecked)
+    .reduce((offersSum, offer) => {
+      return offersSum + offer[1].price;
+    }, 0);
+
+  return event.price + offersTotal;
+};
+
 export {
   getEventPlaceholder,
   shuffleArray,
   getRandomNumber,
   getEventDurationString,
+  calculateEventTotalPrice,
   getRandomDescription,
   groupEventsByDays,
   capitalize,

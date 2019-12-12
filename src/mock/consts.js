@@ -10,7 +10,7 @@
  * @readonly
  * @enum {EventType}
  */
-const EventTypeEnum = Object.freeze({
+const EventType = Object.freeze({
   CHECK: {
     code: `check-in`,
     group: `activity`,
@@ -53,7 +53,7 @@ const EventTypeEnum = Object.freeze({
   },
 });
 
-const cityEventTypes = Object.values(EventTypeEnum)
+const cityEventTypes = Object.values(EventType)
   .filter((type) => type.group === `transfer`)
   .map((type) => type.code);
 
@@ -125,7 +125,7 @@ const LOCATIONS = [
  * @readonly
  * @enum {number}
  */
-const MillisecondsEnum = Object.freeze({
+const DurationType = Object.freeze({
   MINUTE: 60 * 1000,
   HOUR: 60 * 60 * 1000,
   DAY: 24 * 60 * 60 * 1000,
@@ -137,19 +137,19 @@ const MillisecondsEnum = Object.freeze({
  * @readonly
  * @enum {string}
  */
-const KeyboardEnum = Object.freeze({
+const KeyName = Object.freeze({
   ESC: `Esc`,
   ESCAPE: `Escape`,
   ENTER: `Enter`,
 });
 
-const activities = Object.values(EventTypeEnum).filter((type) => type.group === `activity`);
-const transfers = Object.values(EventTypeEnum).filter((type) => type.group === `transfer`);
+const activities = Object.values(EventType).filter((type) => type.group === `activity`);
+const transfers = Object.values(EventType).filter((type) => type.group === `transfer`);
 
 export {
-  EventTypeEnum,
-  MillisecondsEnum,
-  KeyboardEnum,
+  EventType,
+  DurationType,
+  KeyName,
   LOCATIONS,
   activities,
   transfers,

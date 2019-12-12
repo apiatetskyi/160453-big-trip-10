@@ -4,7 +4,7 @@ import FilterComponent from './components/filter';
 import MenuComponent from './components/menu';
 import TripController from './controllers/trip';
 
-import {render, RenderPositionEnum} from './utils/render';
+import {render, RenderPosition} from './utils/render';
 
 import {getEvents} from './mock/event';
 import {getMenu} from './mock/menu';
@@ -23,8 +23,8 @@ const filterComponent = new FilterComponent(getFilter());
 const boardComponent = new BoardComponent();
 const tripController = new TripController(boardComponent);
 
-render(tripHeaderElement, tripInfoComponent, RenderPositionEnum.AFTER_BEGIN);
-render(tripControlsElement.children[0], menuComponent, RenderPositionEnum.AFTER_END);
-render(tripControlsElement.children[1], filterComponent, RenderPositionEnum.AFTER_END);
+render(tripHeaderElement, tripInfoComponent, RenderPosition.AFTER_BEGIN);
+render(tripControlsElement.children[0], menuComponent, RenderPosition.AFTER_END);
+render(tripControlsElement.children[1], filterComponent, RenderPosition.AFTER_END);
 render(tripContainerElement, boardComponent);
 tripController.render(events);

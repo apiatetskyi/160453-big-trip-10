@@ -91,12 +91,21 @@ export default class BaseComponent {
   /**
    * Add handler to component.
    *
-   * @param {string} selector
+   * @param {HTMLElement|string} selector
    * @param {string} eventType
    * @param {function} callback
    */
   addHandler(selector, eventType, callback) {
-    const element = this.getElement().querySelector(selector);
-    this._handlers.push({element, eventType, callback});
+    let elements = null;
+
+    if (typeof selector === `string`) {
+      elements = this.getElement().querySelectorAll(selector);
+    } else if (selector instanceof Node) {
+      elements = [selector];
+    }
+
+    elements.forEach((element) => {
+      this._handlers.push({element, eventType, callback});
+    });
   }
 }

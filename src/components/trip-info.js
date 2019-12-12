@@ -1,5 +1,6 @@
 import moment from 'moment';
 import BaseComponent from '../base/base-component';
+import {calculateEventTotalPrice} from '../utils/common';
 
 const SETTER_ERROR_MESSAGE = `This is readonly property.`;
 
@@ -103,15 +104,7 @@ export default class TripInfoComponent extends BaseComponent {
    */
   _getPrice() {
     return this._events
-      ? this._events.reduce((sum, event) => {
-        const offersTotal = [...event.offers]
-          .filter((offer) => offer[1].isChecked)
-          .reduce((offersSum, offer) => {
-            return offersSum + offer[1].price;
-          }, 0);
-
-        return sum + event.price + offersTotal;
-      }, 0)
+      ? this._events.reduce((sum, event) => sum + calculateEventTotalPrice(event), 0)
       : 0;
   }
 
