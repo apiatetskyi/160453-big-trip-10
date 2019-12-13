@@ -1,10 +1,8 @@
-import EventComponent from '../components/event';
-import EventFormComponent from '../components/event-form';
 import TripDayComponent from '../components/trip-day';
 import SortingComponent, {SortType} from '../components/sorting';
 import NoEventsComponent from '../components/no-events';
-import {KeyName} from '../mock/consts';
-import {render, replace, RenderPosition} from '../utils/render';
+import PointController from './point';
+import {render, RenderPosition} from '../utils/render';
 import {groupEventsByDays} from '../utils/common';
 
 /**
@@ -42,42 +40,6 @@ export default class TripController {
   }
 
   /**
-   * Render trip event and event form. Handle toggling between them.
-   *
-   * @param {HTMLElement} parentElement
-   * @param {Object} event
-   */
-  _renderEvent(parentElement, event) {
-    const eventComponent = new EventComponent(event);
-    const eventFormComponent = new EventFormComponent(event);
-
-    /**
-     * Escape key press handler.
-     *
-     * @param {KeyboardEvent} evt
-     */
-    const escapeKeyDownHandler = (evt) => {
-      if (evt.key === KeyName.ESC || evt.key === KeyName.ESCAPE) {
-        replace(eventComponent, eventFormComponent);
-        document.removeEventListener(`keydown`, escapeKeyDownHandler);
-      }
-    };
-
-    eventComponent.onEdit = () => {
-      replace(eventFormComponent, eventComponent);
-      document.addEventListener(`keydown`, escapeKeyDownHandler);
-    };
-
-    eventFormComponent.onClose = (evt) => {
-      evt.preventDefault();
-      replace(eventComponent, eventFormComponent);
-      document.removeEventListener(`keydown`, escapeKeyDownHandler);
-    };
-
-    render(parentElement, eventComponent);
-  }
-
-  /**
    * Render events, that grouped by trip day.
    *
    * @param {Array} events
@@ -91,7 +53,8 @@ export default class TripController {
       const eventsElement = tripDay.getElement().querySelector(`.trip-events__list`);
 
       dayEvents.forEach((event) => {
-        this._renderEvent(eventsElement, event);
+        const point = new PointController(eventsElement);
+        point.render(event);
       });
 
       render(this._boardComponent.tripDaysElement, tripDay);
@@ -110,7 +73,8 @@ export default class TripController {
     const eventsElement = tripDay.getElement().querySelector(`.trip-events__list`);
 
     events.forEach((event) => {
-      this._renderEvent(eventsElement, event);
+      const point = new PointController(eventsElement);
+      point.render(event);
     });
 
     render(this._boardComponent.tripDaysElement, tripDay);
