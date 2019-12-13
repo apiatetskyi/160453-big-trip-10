@@ -1,4 +1,4 @@
-import BaseComponent from '../base/base-component';
+import BaseComponent from '../base/component';
 
 /**
  * Enum for render position.

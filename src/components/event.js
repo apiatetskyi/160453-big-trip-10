@@ -1,5 +1,5 @@
 import moment from 'moment';
-import BaseComponent from '../base/base-component';
+import BaseComponent from '../base/component';
 import {capitalize, getEventDurationString, getEventPlaceholder} from '../utils/common';
 
 /**

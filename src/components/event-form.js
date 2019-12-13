@@ -1,5 +1,5 @@
 import moment from 'moment';
-import BaseComponent from '../base/base-component';
+import BaseComponent from '../base/component';
 import {LOCATIONS, activities, transfers} from '../mock/consts';
 import {capitalize, getEventPlaceholder} from '../utils/common';
 
@@ -34,6 +34,10 @@ export default class EventFormComponent extends BaseComponent {
 
   set onAddToFavorite(callback) {
     this.addHandler(`.event__favorite-checkbox`, `click`, callback);
+  }
+
+  set onSetPrice(callback) {
+    this.addHandler(`.event__input--price`, `blur`, callback);
   }
 
   /**

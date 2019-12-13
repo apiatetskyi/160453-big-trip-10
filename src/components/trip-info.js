@@ -1,5 +1,5 @@
 import moment from 'moment';
-import BaseComponent from '../base/base-component';
+import BaseComponent from '../base/component';
 import {calculateEventTotalPrice} from '../utils/common';
 
 const SETTER_ERROR_MESSAGE = `This is readonly property.`;
