@@ -1,6 +1,6 @@
 import moment from 'moment';
 import BaseComponent from '../base/component';
-import {LOCATIONS, activities, transfers} from '../mock/consts';
+import {activities, transfers} from '../mock/consts';
 import {capitalize, getEventPlaceholder} from '../utils/common';
 
 /**
@@ -79,7 +79,7 @@ export default class EventFormComponent extends BaseComponent {
               <label class="event__label  event__type-output" for="event-destination-1">
                 ${capitalize(this._event.type.code)} ${getEventPlaceholder(this._event.type)}
               </label>
-              <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${this._event.location.name}" list="destination-list-1">
+              <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${this._event.currentLocation.name}" list="destination-list-1">
               <datalist id="destination-list-1">${this._getLocationsTemplate()}</datalist>
             </div>
     
@@ -129,7 +129,7 @@ export default class EventFormComponent extends BaseComponent {
     
             <section class="event__section  event__section--destination">
               <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-              <p class="event__destination-description">${this._event.description}</p>
+              <p class="event__destination-description">${this._event.currentLocation.description}</p>
     
               <div class="event__photos-container">
                 <div class="event__photos-tape">${this._getPhotosTemplate()}</div>
@@ -198,7 +198,7 @@ export default class EventFormComponent extends BaseComponent {
    * @private
    */
   _getLocationsTemplate() {
-    return LOCATIONS.map((location) => `<option value="${location.name}"></option>`).join(`\n`);
+    return this._event.locations.map((location) => `<option value="${location.name}"></option>`).join(`\n`);
   }
 
   /**
@@ -209,7 +209,7 @@ export default class EventFormComponent extends BaseComponent {
    * @private
    */
   _getPhotosTemplate() {
-    return this._event.attractionImages
+    return this._event.currentLocation.photos
       .map((photo) => `<img class="event__photo" src="${photo}" alt="Event photo">`).join(`\n`);
   }
 

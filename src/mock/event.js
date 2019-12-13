@@ -1,5 +1,7 @@
-import {EventType, DurationType, LOCATIONS} from './consts';
-import {getRandomDescription, getRandomNumber, roundToStep} from '../utils/common';
+import {EventType, DurationType} from './consts';
+import {LOCATIONS} from './locations';
+import {OFFERS} from './offers';
+import {getRandomNumber, roundToStep, shuffleArray} from '../utils/common';
 
 /**
  * @param {EventType} types
@@ -15,15 +17,9 @@ const getRandomType = (types) => {
 /**
  * @param {Array} locations
  *
- * @param {string} eventType
- *
  * @return {string}
  */
-const getRandomLocation = (locations, eventType) => {
-  locations = locations.filter((location) => location.eventTypes.has(eventType));
-
-  return locations[Math.floor(Math.random() * locations.length)];
-};
+const getRandomLocation = (locations) => shuffleArray(locations).slice(0, getRandomNumber(1, 3));
 
 
 /**
@@ -40,44 +36,6 @@ let lastEventDate = Date.now();
  * @return {Object}
  */
 export const getEvent = () => {
-  const offers = new Map([
-    [
-      `luggage`, {
-        isChecked: Math.random() >= 0.5,
-        title: `Add luggage`,
-        price: roundToStep(getRandomNumber(10, 40), 5),
-      }
-    ],
-    [
-      `comfort`, {
-        isChecked: Math.random() >= 0.5,
-        title: `Switch to comfort class`,
-        price: roundToStep(getRandomNumber(10, 40), 5),
-      }
-    ],
-    [
-      `meal`, {
-        isChecked: Math.random() >= 0.5,
-        title: `Add meal`,
-        price: roundToStep(getRandomNumber(10, 40), 5),
-      }
-    ],
-    [
-      `seats`, {
-        isChecked: Math.random() >= 0.5,
-        title: `Choose seats`,
-        price: roundToStep(getRandomNumber(10, 40), 5),
-      }
-    ],
-    [
-      `train`, {
-        isChecked: Math.random() >= 0.5,
-        title: `Travel by train`,
-        price: roundToStep(getRandomNumber(10, 40), 5),
-      }
-    ],
-  ]);
-
   const dateStart = roundToStep(
       getRandomNumber(
           lastEventDate,
@@ -95,15 +53,21 @@ export const getEvent = () => {
   );
 
   const type = getRandomType(EventType);
+  const locations = getRandomLocation(LOCATIONS.filter((location) => location.eventTypes.has(type.code)));
+  const currentLocation = locations[getRandomNumber(0, locations.length - 1)];
+  const offers = [...OFFERS].filter((offer) => {
+    const [, data] = offer;
+
+    return data.eventTypes.has(type.code);
+  });
 
   lastEventDate = dateEnd;
 
   return {
-    location: getRandomLocation(LOCATIONS, type.code),
-    attractionImages: new Array(5).fill(``).map(() => `http://picsum.photos/300/150?r=${Math.random()}`),
-    description: getRandomDescription(),
     price: roundToStep(getRandomNumber(50, 150), 25),
     isFavorite: Math.random() >= 0.5,
+    currentLocation,
+    locations,
     dateStart,
     dateEnd,
     offers,
