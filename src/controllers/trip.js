@@ -18,19 +18,25 @@ export default class TripController {
    * @param {BaseComponent} boardComponent
    */
   constructor(boardComponent) {
+    this._events = [];
     this._boardComponent = boardComponent;
+
+    this._onSortingChange = this._onSortingChange.bind(this);
+    this._onDataChange = this._onDataChange.bind(this);
   }
 
   render(events) {
-    if (events.length) {
+    this._events = events;
+
+    if (this._events.length) {
       const sortingComponent = new SortingComponent();
 
       sortingComponent.onClick = (evt) => {
-        this._sortingChangeHandler(evt.target.dataset.sortType, events);
+        this._onSortingChange(evt.target.dataset.sortType);
       };
 
       render(this._boardComponent, sortingComponent, RenderPosition.AFTER_BEGIN);
-      this._renderGroupedEvents(events);
+      this._renderGroupedEvents(this._events);
 
     } else {
       const noEventsComponent = new NoEventsComponent();
@@ -53,7 +59,7 @@ export default class TripController {
       const eventsElement = tripDay.getElement().querySelector(`.trip-events__list`);
 
       dayEvents.forEach((event) => {
-        const point = new PointController(eventsElement);
+        const point = new PointController(eventsElement, this._onDataChange);
         point.render(event);
       });
 
@@ -73,7 +79,7 @@ export default class TripController {
     const eventsElement = tripDay.getElement().querySelector(`.trip-events__list`);
 
     events.forEach((event) => {
-      const point = new PointController(eventsElement);
+      const point = new PointController(eventsElement, this._onDataChange);
       point.render(event);
     });
 
@@ -82,22 +88,21 @@ export default class TripController {
 
   /**
    * @param {string} sortType
-   * @param {Array} events
    *
    * @private
    */
-  _sortingChangeHandler(sortType, events) {
+  _onSortingChange(sortType) {
     let sortedEvents = [];
 
     switch (sortType) {
       case SortType.DURATION :
-        sortedEvents = events.slice().sort((a, b) => (b.dateEnd - b.dateStart) - (a.dateEnd - a.dateStart));
+        sortedEvents = this._events.slice().sort((a, b) => (b.dateEnd - b.dateStart) - (a.dateEnd - a.dateStart));
         break;
       case SortType.PRICE :
-        sortedEvents = events.slice().sort((a, b) => b.price - a.price); // TODO: should i count price with offers?
+        sortedEvents = this._events.slice().sort((a, b) => b.price - a.price); // TODO: should i count price with offers?
         break;
       case SortType.DEFAULT :
-        sortedEvents = events.slice();
+        sortedEvents = this._events.slice();
         break;
     }
 
@@ -108,6 +113,21 @@ export default class TripController {
     } else {
       this._renderEvents(sortedEvents);
     }
+  }
 
+  /**
+   * Update events data after user actions.
+   *
+   * @param {PointController} pointController
+   * @param {Object} oldData
+   * @param {Object} newData
+   *
+   * @private
+   */
+  _onDataChange(pointController, oldData, newData) {
+    const oldDataIndex = this._events.findIndex((item) => oldData === item);
+
+    this._events[oldDataIndex] = newData;
+    pointController.render(newData);
   }
 }

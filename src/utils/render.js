@@ -65,6 +65,7 @@ const replace = (newComponent, oldComponent) => {
 
   if (isAllElementsExist && parentElement.contains(oldElement)) {
     parentElement.replaceChild(newElement, oldElement);
+    oldComponent.unbindHandlers();
     newComponent.bindHandlers();
   }
 };

@@ -8,9 +8,14 @@ export default class PointController {
   /**
    * Create point controller.
    * @param {HTMLElement} container
+   * @param {Function} onDataChange
    */
-  constructor(container) {
+  constructor(container, onDataChange) {
     this._container = container;
+    this._onDataChange = onDataChange;
+
+    this._eventComponent = null;
+    this._eventFormComponent = null;
   }
 
   /**
@@ -19,32 +24,46 @@ export default class PointController {
    * @param {Object} event
    */
   render(event) {
-    const eventComponent = new EventComponent(event);
-    const eventFormComponent = new EventFormComponent(event);
+    const oldEventComponent = this._eventComponent;
+    const oldEventFormComponent = this._eventFormComponent;
+
+    this._eventComponent = new EventComponent(event);
+    this._eventFormComponent = new EventFormComponent(event);
 
     /**
      * Escape key press handler.
      *
      * @param {KeyboardEvent} evt
      */
-    const escapeKeyDownHandler = (evt) => {
+    const onEscapeKeyDown = (evt) => {
       if (evt.key === KeyName.ESC || evt.key === KeyName.ESCAPE) {
-        replace(eventComponent, eventFormComponent);
-        document.removeEventListener(`keydown`, escapeKeyDownHandler);
+        replace(this._eventComponent, this._eventFormComponent);
+        document.removeEventListener(`keydown`, onEscapeKeyDown);
       }
     };
 
-    eventComponent.onEdit = () => {
-      replace(eventFormComponent, eventComponent);
-      document.addEventListener(`keydown`, escapeKeyDownHandler);
+    this._eventComponent.onEdit = () => {
+      replace(this._eventFormComponent, this._eventComponent);
+      document.addEventListener(`keydown`, onEscapeKeyDown);
     };
 
-    eventFormComponent.onClose = (evt) => {
+    this._eventFormComponent.onClose = (evt) => {
       evt.preventDefault();
-      replace(eventComponent, eventFormComponent);
-      document.removeEventListener(`keydown`, escapeKeyDownHandler);
+      replace(this._eventComponent, this._eventFormComponent);
+      document.removeEventListener(`keydown`, onEscapeKeyDown);
     };
 
-    render(this._container, eventComponent);
+    this._eventFormComponent.onAddToFavorite = () => {
+      this._onDataChange(this, event, Object.assign({}, event, {
+        isFavorite: !event.isFavorite,
+      }));
+    };
+
+    if (oldEventComponent && oldEventFormComponent) {
+      replace(this._eventComponent, oldEventComponent);
+      replace(this._eventFormComponent, oldEventFormComponent);
+    } else {
+      render(this._container, this._eventComponent);
+    }
   }
 }

@@ -32,6 +32,10 @@ export default class EventFormComponent extends BaseComponent {
     this.addHandler(`.event__rollup-btn`, `click`, callback);
   }
 
+  set onAddToFavorite(callback) {
+    this.addHandler(`.event__favorite-checkbox`, `click`, callback);
+  }
+
   /**
    * Get string template for trip event form.
    *
