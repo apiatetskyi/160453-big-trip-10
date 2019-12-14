@@ -34,8 +34,6 @@ const render = (container, component, position = RenderPosition.BEFORE_END) => {
   } else {
     container.insertAdjacentElement(position, component.getElement());
   }
-
-  component.bindHandlers();
 };
 
 /**
@@ -65,8 +63,6 @@ const replace = (newComponent, oldComponent) => {
 
   if (isAllElementsExist && parentElement.contains(oldElement)) {
     parentElement.replaceChild(newElement, oldElement);
-    oldComponent.unbindHandlers();
-    newComponent.bindHandlers();
   }
 };
 

@@ -15,11 +15,14 @@ const getRandomType = (types) => {
 };
 
 /**
- * @param {Array} locations
+ * @param {EventType} eventType
  *
  * @return {string}
  */
-const getRandomLocation = (locations) => shuffleArray(locations).slice(0, getRandomNumber(1, 3));
+const getLocationsForEventType = (eventType) => {
+  const eventTypeLocations = LOCATIONS.filter((location) => location.eventTypes.has(eventType.code));
+  return shuffleArray(eventTypeLocations).slice(0, getRandomNumber(2, 4));
+};
 
 
 /**
@@ -35,7 +38,7 @@ let lastEventDate = Date.now();
  *
  * @return {Object}
  */
-export const getEvent = () => {
+const getEvent = () => {
   const dateStart = roundToStep(
       getRandomNumber(
           lastEventDate,
@@ -52,14 +55,9 @@ export const getEvent = () => {
       30 * DurationType.MINUTE
   );
 
-  const type = getRandomType(EventType);
-  const locations = getRandomLocation(LOCATIONS.filter((location) => location.eventTypes.has(type.code)));
+  const type = Object.assign({}, getRandomType(EventType));
+  const locations = getLocationsForEventType(type);
   const currentLocation = locations[getRandomNumber(0, locations.length - 1)];
-  const offers = [...OFFERS].filter((offer) => {
-    const [, data] = offer;
-
-    return data.eventTypes.has(type.code);
-  });
 
   lastEventDate = dateEnd;
 
@@ -70,7 +68,13 @@ export const getEvent = () => {
     locations,
     dateStart,
     dateEnd,
-    offers,
+    get offers() {
+      return [...OFFERS].filter((offer) => {
+        const [, data] = offer;
+
+        return data.eventTypes.has(this.type.code);
+      });
+    },
     type,
   };
 };
@@ -82,4 +86,10 @@ export const getEvent = () => {
  *
  * @return {Array}
  */
-export const getEvents = (count) => new Array(count).fill(``).map(() => getEvent());
+const getEvents = (count) => new Array(count).fill(``).map(() => getEvent());
+
+export {
+  getEvent,
+  getEvents,
+  getLocationsForEventType,
+};

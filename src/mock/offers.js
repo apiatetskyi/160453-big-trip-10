@@ -14,7 +14,7 @@ const OFFERS = new Map([
       isChecked: Math.random() >= 0.5,
       title: `Switch to comfort class`,
       price: roundToStep(getRandomNumber(10, 40), 5),
-      eventTypes: new Set([`check-in`, `restaurant`, `train`, `ship`, `flight`, `transport`, `drive`]),
+      eventTypes: new Set([`check-in`, `train`, `ship`, `flight`, `transport`, `drive`]),
     }
   ],
   [
