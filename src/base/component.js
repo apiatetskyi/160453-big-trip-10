@@ -17,8 +17,7 @@ export default class BaseComponent {
     }
 
     this._element = null;
-    this._handlers = [];
-    this._isHandlersBind = false;
+    this._observers = [];
   }
 
   /**
@@ -29,6 +28,7 @@ export default class BaseComponent {
   getElement() {
     if (!this._element) {
       this._element = createElement(this.getTemplate());
+      this._subscribeObservers();
     }
 
     return this._element;
@@ -38,9 +38,8 @@ export default class BaseComponent {
    * Remove reference to component element.
    */
   removeElement() {
+    this._unSubscribeObservers();
     this._element = null;
-
-    this.unbindHandlers();
   }
 
   /**
@@ -55,57 +54,64 @@ export default class BaseComponent {
   }
 
   /**
-   * Bind component event handlers.
-   */
-  bindHandlers() {
-    if (!this._isHandlersBind) {
-      this._handlers.forEach((handler) => {
-        const {element, eventType, callback} = handler;
-
-        if (element && eventType && callback) {
-          element.addEventListener(eventType, callback);
-        }
-      });
-
-      this._isHandlersBind = true;
-    }
-  }
-
-  /**
-   * Unbind component event handlers.
-   */
-  unbindHandlers() {
-    if (this._isHandlersBind) {
-      this._handlers.forEach((handler) => {
-        const {element, eventType, callback} = handler;
-
-        if (element && eventType && callback) {
-          element.removeEventListener(eventType, callback);
-        }
-      });
-
-      this._isHandlersBind = false;
-    }
-  }
-
-  /**
-   * Add handler to component.
+   * Update observers subscription to the component events.
    *
-   * @param {HTMLElement|string} selector
+   * @private
+   */
+  _subscribeObservers() {
+    this._observers.forEach((handler) => {
+      const {selector, eventType, callback, selectAll} = handler;
+
+      if (selectAll) {
+        this.getElement().querySelectorAll(selector).forEach((element) => {
+          element.addEventListener(eventType, callback);
+        });
+      } else {
+        this.getElement().querySelector(selector).addEventListener(eventType, callback);
+      }
+    });
+  }
+
+  /**
+   * Unsubscribe observers for component events.
+   *
+   * @private
+   */
+  _unSubscribeObservers() {
+    this._observers.forEach((handler) => {
+      const {selector, eventType, callback, selectAll} = handler;
+
+      if (selectAll) {
+        this.getElement().querySelectorAll(selector).forEach((element) => {
+          element.removeElement(eventType, callback);
+        });
+      } else {
+        this.getElement().querySelector(selector).addEventListener(eventType, callback);
+      }
+    });
+  }
+
+  /**
+   * Add observer to the component.
+   *
+   * @param {string} selector
    * @param {string} eventType
    * @param {function} callback
+   * @param {Boolean} selectAll
    */
-  addHandler(selector, eventType, callback) {
-    let elements = null;
-
-    if (typeof selector === `string`) {
-      elements = this.getElement().querySelectorAll(selector);
-    } else if (selector instanceof Node) {
-      elements = [selector];
+  registerObserver(selector, eventType, callback, selectAll = false) {
+    if (!(selector && eventType && callback)) {
+      throw new Error(`You should pass all parameters`);
     }
 
-    elements.forEach((element) => {
-      this._handlers.push({element, eventType, callback});
-    });
+    this._observers.push({selector, eventType, callback, selectAll});
+
+    if (selectAll) {
+      this.getElement().querySelectorAll(selector).forEach((element) => {
+        element.addEventListener(eventType, callback);
+      });
+    } else {
+      this.getElement().querySelector(selector).addEventListener(eventType, callback);
+    }
   }
 }
