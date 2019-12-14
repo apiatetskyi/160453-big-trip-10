@@ -9,10 +9,12 @@ export default class PointController {
    * Create point controller.
    * @param {HTMLElement} container
    * @param {Function} onDataChange
+   * @param {Function} onViewChange
    */
-  constructor(container, onDataChange) {
+  constructor(container, onDataChange, onViewChange) {
     this._container = container;
     this._onDataChange = onDataChange;
+    this._onViewChange = onViewChange;
 
     this._eventComponent = null;
     this._eventFormComponent = null;
@@ -43,6 +45,7 @@ export default class PointController {
     };
 
     this._eventComponent.onEdit = () => {
+      this._onViewChange();
       replace(this._eventFormComponent, this._eventComponent);
       document.addEventListener(`keydown`, onEscapeKeyDown);
     };
@@ -63,5 +66,12 @@ export default class PointController {
     } else {
       render(this._container, this._eventComponent);
     }
+  }
+
+  /**
+   * Set point to default view.
+   */
+  setDefaultView() {
+    replace(this._eventComponent, this._eventFormComponent);
   }
 }

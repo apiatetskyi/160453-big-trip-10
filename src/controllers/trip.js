@@ -20,9 +20,11 @@ export default class TripController {
   constructor(boardComponent) {
     this._events = [];
     this._boardComponent = boardComponent;
+    this._pointControllers = [];
 
     this._onSortingChange = this._onSortingChange.bind(this);
     this._onDataChange = this._onDataChange.bind(this);
+    this._onViewChange = this._onViewChange.bind(this);
   }
 
   render(events) {
@@ -59,8 +61,7 @@ export default class TripController {
       const eventsElement = tripDay.getElement().querySelector(`.trip-events__list`);
 
       dayEvents.forEach((event) => {
-        const point = new PointController(eventsElement, this._onDataChange);
-        point.render(event);
+        this._renderPoint(event, eventsElement);
       });
 
       render(this._boardComponent.tripDaysElement, tripDay);
@@ -79,11 +80,23 @@ export default class TripController {
     const eventsElement = tripDay.getElement().querySelector(`.trip-events__list`);
 
     events.forEach((event) => {
-      const point = new PointController(eventsElement, this._onDataChange);
-      point.render(event);
+      this._renderPoint(event, eventsElement);
     });
 
     render(this._boardComponent.tripDaysElement, tripDay);
+  }
+
+  /**
+   * @param {Object} event
+   * @param {HTMLElement} container
+   *
+   * @private
+   */
+  _renderPoint(event, container) {
+    const pointController = new PointController(container, this._onDataChange, this._onViewChange);
+
+    this._pointControllers.push(pointController);
+    pointController.render(event);
   }
 
   /**
@@ -129,5 +142,18 @@ export default class TripController {
 
     this._events[oldDataIndex] = newData;
     pointController.render(newData);
+  }
+
+  /**
+   * Call back before change point view.
+   *
+   * @private
+   */
+  _onViewChange() {
+    if (this._pointControllers) {
+      this._pointControllers.forEach((pointController) => {
+        pointController.setDefaultView();
+      });
+    }
   }
 }
