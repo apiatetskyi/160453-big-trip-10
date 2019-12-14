@@ -27,7 +27,7 @@ export default class EventComponent extends BaseComponent {
    * @param {Function} callback
    */
   set onEdit(callback) {
-    this.addHandler(`.event__rollup-btn`, `click`, callback);
+    this.registerObserver(`.event__rollup-btn`, `click`, callback);
   }
 
   /**

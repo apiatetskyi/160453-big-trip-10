@@ -33,8 +33,8 @@ export default class SortingComponent extends BaseComponent {
    *
    * @param {Function} handler
    */
-  set onClick(handler) {
-    this.addHandler(`.trip-sort__input`, `click`, (evt) => {
+  set onButtonClick(handler) {
+    this.registerObserver(`.trip-sort__input`, `click`, (evt) => {
       if (this._currentSorting === evt.target.dataset.sortType) {
         return;
       }
@@ -42,7 +42,7 @@ export default class SortingComponent extends BaseComponent {
       this._currentSorting = evt.target.dataset.sortType;
       this._toggleDayInfoColumnTitle();
       handler(evt);
-    });
+    }, true);
   }
 
   /**

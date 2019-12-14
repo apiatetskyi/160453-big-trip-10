@@ -31,7 +31,7 @@ export default class TripController {
     if (this._events.length) {
       const sortingComponent = new SortingComponent();
 
-      sortingComponent.onClick = (evt) => {
+      sortingComponent.onButtonClick = (evt) => {
         this._onSortingChange(evt.target.dataset.sortType);
       };
 

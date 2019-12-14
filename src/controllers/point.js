@@ -53,10 +53,8 @@ export default class PointController {
       document.removeEventListener(`keydown`, onEscapeKeyDown);
     };
 
-    this._eventFormComponent.onAddToFavorite = () => {
-      this._onDataChange(this, event, Object.assign({}, event, {
-        isFavorite: !event.isFavorite,
-      }));
+    this._eventFormComponent.onSave = (newData) => {
+      this._onDataChange(this, event, Object.assign({}, newData));
     };
 
     if (oldEventComponent && oldEventFormComponent) {
