@@ -1,15 +1,15 @@
 import moment from 'moment';
-import BaseComponent from '../base/base-component';
-import {LOCATIONS, activities, transfers} from '../mock/consts';
+import BaseSmartComponent from '../base/smart-component';
+import {EventType, activities, transfers} from '../mock/consts';
 import {capitalize, getEventPlaceholder} from '../utils/common';
 
 /**
  * Class representing trip event form.
  *
  * @class EventFormComponent
- * @extends BaseComponent
+ * @extends BaseSmartComponent
  */
-export default class EventFormComponent extends BaseComponent {
+export default class EventFormComponent extends BaseSmartComponent {
 
   /**
    * Create a trip event form.
@@ -20,16 +20,40 @@ export default class EventFormComponent extends BaseComponent {
     super();
 
     this._event = event;
+
+    this._onEventTypeChange = this._onEventTypeChange.bind(this);
+    this._onLocationChange = this._onLocationChange.bind(this);
+    this._onAddToFavorite = this._onAddToFavorite.bind(this);
+    this._subscribeOnEvents();
   }
 
   /**
-   * Setter for component closing.
+   * Set observer on form closed.
    *
    * @param {Function} callback
    */
   set onClose(callback) {
-    this.addHandler(`form`, `submit`, callback);
-    this.addHandler(`.event__rollup-btn`, `click`, callback);
+    this.registerObserver(`.event__rollup-btn`, `click`, callback);
+    this.registerObserver(`form`, `submit`, callback);
+  }
+
+  /**
+   * Set observer on form save.
+   *
+   * @param {Function} callback
+   */
+  set onSave(callback) {
+    this.registerObserver(`form`, `submit`, (evt) => {
+      evt.preventDefault();
+      callback(this._event);
+    });
+  }
+
+  /**
+   * Recover event listeners after view update.
+   */
+  updateEventListeners() {
+    this._subscribeOnEvents();
   }
 
   /**
@@ -42,6 +66,8 @@ export default class EventFormComponent extends BaseComponent {
     const dateStart = moment(this._event.dateStart).format(dateFormat);
     const dateEnd = moment(this._event.dateEnd).format(dateFormat);
     const isChecked = this._event.isFavorite ? `checked` : ``;
+    const locationName = this._event.currentLocation ? this._event.currentLocation.name : ``;
+    const locationDescription = this._event.currentLocation ? this._event.currentLocation.description : ``;
 
     return (
       `<li class="trip-events__item">
@@ -71,7 +97,7 @@ export default class EventFormComponent extends BaseComponent {
               <label class="event__label  event__type-output" for="event-destination-1">
                 ${capitalize(this._event.type.code)} ${getEventPlaceholder(this._event.type)}
               </label>
-              <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${this._event.location.name}" list="destination-list-1">
+              <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${locationName}" list="destination-list-1">
               <datalist id="destination-list-1">${this._getLocationsTemplate()}</datalist>
             </div>
     
@@ -121,7 +147,7 @@ export default class EventFormComponent extends BaseComponent {
     
             <section class="event__section  event__section--destination">
               <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-              <p class="event__destination-description">${this._event.description}</p>
+              <p class="event__destination-description">${locationDescription}</p>
     
               <div class="event__photos-container">
                 <div class="event__photos-tape">${this._getPhotosTemplate()}</div>
@@ -172,12 +198,19 @@ export default class EventFormComponent extends BaseComponent {
    * @private
    */
   _getTypeOptionsTemplate(options) {
-    return options.map((option) => {
+    return options.map((option, index) => {
+      const isChecked = option.code === this._event.type.code ? `checked` : ``;
       return (
         `<div class="event__type-item">
-        <input id="event-type-${option.code}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${option.code}">
-        <label class="event__type-label  event__type-label--${option.code}" for="event-type-${option.code}-1">${capitalize(option.code)}</label>
-      </div>`
+          <input id="event-type-${option.code}-${index + 1}"
+                 class="event__type-input  visually-hidden"
+                 type="radio"
+                 name="event-type"
+                 value="${option.code}"
+                 ${isChecked}
+          >
+          <label class="event__type-label  event__type-label--${option.code}" for="event-type-${option.code}-${index + 1}">${capitalize(option.code)}</label>
+        </div>`
       );
     }).join(`\n`);
   }
@@ -190,7 +223,7 @@ export default class EventFormComponent extends BaseComponent {
    * @private
    */
   _getLocationsTemplate() {
-    return LOCATIONS.map((location) => `<option value="${location.name}"></option>`).join(`\n`);
+    return this._event.locations.map((location) => `<option value="${location.name}"></option>`).join(`\n`);
   }
 
   /**
@@ -201,8 +234,76 @@ export default class EventFormComponent extends BaseComponent {
    * @private
    */
   _getPhotosTemplate() {
-    return this._event.attractionImages
-      .map((photo) => `<img class="event__photo" src="${photo}" alt="Event photo">`).join(`\n`);
+    return this._event.currentLocation
+      ? this._event.currentLocation.photos
+          .map((photo) => `<img class="event__photo" src="${photo}" alt="Event photo">`).join(`\n`)
+      : ``;
   }
 
+  /**
+   * Subscribe event listeners.
+   *
+   * @private
+   */
+  _subscribeOnEvents() {
+    const element = this.getElement();
+
+    element.querySelectorAll(`.event__type-input`).forEach((input) => {
+      input.addEventListener(`click`, this._onEventTypeChange);
+    });
+
+    this.getElement().querySelector(`.event__input--destination`)
+      .addEventListener(`change`, this._onLocationChange);
+
+    this.getElement().querySelector(`.event__favorite-checkbox`)
+      .addEventListener(`change`, this._onAddToFavorite);
+  }
+
+  /**
+   * Handler for event type change.
+   *
+   * @param {Event} evt
+   *
+   * @private
+   */
+  _onEventTypeChange(evt) {
+    if (evt.target.value === this._event.type.code) {
+      return;
+    }
+
+    this._event.type = Object.assign({}, EventType[evt.target.value.toUpperCase().replace(/-.+$/, ``)]);
+    this.update();
+  }
+
+  /**
+   * Handler for location change.
+   *
+   * @param {Event} evt
+   *
+   * @private
+   */
+  _onLocationChange(evt) {
+    if (evt.target.value === this._event.currentLocation.name) {
+      return;
+    }
+
+    const selectedLocation = this._event.locations.find((location) => location.name === evt.target.value);
+
+    if (!selectedLocation) {
+      return;
+    }
+
+    this._event.currentLocation = selectedLocation;
+    this.update();
+  }
+
+  /**
+   * Handler for adding event to favorite.
+   *
+   * @private
+   */
+  _onAddToFavorite() {
+    this._event.isFavorite = !this._event.isFavorite;
+    this.update();
+  }
 }

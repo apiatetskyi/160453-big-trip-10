@@ -1,5 +1,5 @@
 import moment from 'moment';
-import BaseComponent from '../base/base-component';
+import BaseComponent from '../base/component';
 import {capitalize, getEventDurationString, getEventPlaceholder} from '../utils/common';
 
 /**
@@ -27,7 +27,7 @@ export default class EventComponent extends BaseComponent {
    * @param {Function} callback
    */
   set onEdit(callback) {
-    this.addHandler(`.event__rollup-btn`, `click`, callback);
+    this.registerObserver(`.event__rollup-btn`, `click`, callback);
   }
 
   /**
@@ -48,7 +48,7 @@ export default class EventComponent extends BaseComponent {
           <div class="event__type">
             <img class="event__type-icon" width="42" height="42" src="img/icons/${this._event.type.code}.png" alt="Event type icon">
           </div>
-          <h3 class="event__title">${capitalize(this._event.type.code)} ${getEventPlaceholder(this._event.type)} ${this._event.location.name}</h3>
+          <h3 class="event__title">${capitalize(this._event.type.code)} ${getEventPlaceholder(this._event.type)} ${this._event.currentLocation.name}</h3>
   
           <div class="event__schedule">
             <p class="event__time">

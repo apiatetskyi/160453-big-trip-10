@@ -1,5 +1,5 @@
 import moment from 'moment';
-import BaseComponent from '../base/base-component';
+import BaseComponent from '../base/component';
 import {calculateEventTotalPrice} from '../utils/common';
 
 const SETTER_ERROR_MESSAGE = `This is readonly property.`;
@@ -85,7 +85,7 @@ export default class TripInfoComponent extends BaseComponent {
    */
   _getRouteTemplate() {
     if (this._events.length) {
-      const cities = this._events.filter((event) => event.location.type === `city`).map((event) => event.location);
+      const cities = this._events.filter((event) => event.currentLocation.type === `city`).map((event) => event.currentLocation);
 
       return cities.length > 3
         ? `${cities[0].name} &mdash; ... &mdash; ${cities[cities.length - 1].name}`

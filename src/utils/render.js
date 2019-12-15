@@ -1,4 +1,4 @@
-import BaseComponent from '../base/base-component';
+import BaseComponent from '../base/component';
 
 /**
  * Enum for render position.
@@ -34,8 +34,6 @@ const render = (container, component, position = RenderPosition.BEFORE_END) => {
   } else {
     container.insertAdjacentElement(position, component.getElement());
   }
-
-  component.bindHandlers();
 };
 
 /**
@@ -65,7 +63,6 @@ const replace = (newComponent, oldComponent) => {
 
   if (isAllElementsExist && parentElement.contains(oldElement)) {
     parentElement.replaceChild(newElement, oldElement);
-    newComponent.bindHandlers();
   }
 };
 
