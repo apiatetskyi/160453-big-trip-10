@@ -1,4 +1,7 @@
 import moment from 'moment';
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
+import 'flatpickr/dist/themes/light.css';
 import BaseSmartComponent from '../base/smart-component';
 import {EventType, activities, transfers} from '../mock/consts';
 import {capitalize, getEventPlaceholder} from '../utils/common';
@@ -20,11 +23,13 @@ export default class EventFormComponent extends BaseSmartComponent {
     super();
 
     this._event = event;
+    this._flatpickrs = [];
 
     this._onEventTypeChange = this._onEventTypeChange.bind(this);
     this._onLocationChange = this._onLocationChange.bind(this);
     this._onAddToFavorite = this._onAddToFavorite.bind(this);
     this._subscribeOnEvents();
+    this._addFlatpickr();
   }
 
   /**
@@ -54,6 +59,14 @@ export default class EventFormComponent extends BaseSmartComponent {
    */
   updateEventListeners() {
     this._subscribeOnEvents();
+  }
+
+  /**
+   * @inheritDoc
+   */
+  update() {
+    super.update();
+    this._addFlatpickr();
   }
 
   /**
@@ -305,5 +318,42 @@ export default class EventFormComponent extends BaseSmartComponent {
   _onAddToFavorite() {
     this._event.isFavorite = !this._event.isFavorite;
     this.update();
+  }
+
+  _addFlatpickr() {
+    if (this._flatpickrs.length > 0) {
+      this._flatpickrs.forEach((flatpickrInstance) => {
+        flatpickrInstance.destroy();
+      });
+
+      this._flatpickrs = [];
+    }
+
+    const self = this;
+    const startDateInput = this.getElement().querySelector(`.event__input--time[name=event-start-time]`);
+    const endDateInput = this.getElement().querySelector(`.event__input--time[name=event-end-time]`);
+    const dateFormat = `d/m/y H:i`;
+
+    this._flatpickrs.push(flatpickr(startDateInput, {
+      'enableTime': true,
+      'time_24hr': true,
+      'defaultDate': this._event.dateStart,
+      'maxDate': this._event.dateEnd,
+      onChange(dates) {
+        self._event.dateStart = dates[0].getTime();
+      },
+      dateFormat,
+    }));
+
+    this._flatpickrs.push(flatpickr(endDateInput, {
+      'enableTime': true,
+      'time_24hr': true,
+      'minDate': this._event.dateStart,
+      'defaultDate': this._event.dateEnd,
+      onChange(dates) {
+        self._event.dateEnd = dates[0].getTime();
+      },
+      dateFormat,
+    }));
   }
 }
